@@ -29,6 +29,10 @@
 
 
     <bean id="csvQuestionDao" class="ru.otus.hw.dao.CsvQuestionDao">
+        <constructor-arg index="0" ref="csvReader"/>
+    </bean>
+
+    <bean id="csvReader" class="ru.otus.hw.config.CSVReader">
         <constructor-arg index="0" ref="appProperties"/>
     </bean>
 
