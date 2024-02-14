@@ -23,11 +23,12 @@ public class AnswerProcessor implements ProgramProcessor {
         while (true) {
             try {
                 ioService.printWithoutNewLine("Your answer is: ");
-                resultService.setAnswer(ioService.getIntegerUserInput() == correctAnswer);
+                int userInput = ioService.getIntegerUserInput();
+                resultService.setAnswer(userInput == correctAnswer);
                 break;
             } catch (IncorrectInputException ex) {
-                ioService.printFormattedLine("Ошибка!\n");
-                ioService.printLine("");
+//                ioService.printFormattedLine("Ошибка!");
+//                ioService.printLine("");
             }
         }
     }
