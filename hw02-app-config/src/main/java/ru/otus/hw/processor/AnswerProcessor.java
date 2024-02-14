@@ -27,8 +27,7 @@ public class AnswerProcessor implements ProgramProcessor {
                 resultService.setAnswer(userInput == correctAnswer);
                 break;
             } catch (IncorrectInputException ex) {
-//                ioService.printFormattedLine("Ошибка!");
-//                ioService.printLine("");
+                ioService.printFormattedLine("Answer must be a valid integer number, please try again.");
             }
         }
     }

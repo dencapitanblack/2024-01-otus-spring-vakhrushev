@@ -41,8 +41,8 @@ public class StreamsIOService implements IOService {
     public int getIntegerUserInput() throws IncorrectInputException {
 
         try {
-            return scanner.nextInt();
-        } catch (InputMismatchException ex) {
+            return Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException ex) {
             throw new IncorrectInputException("Answer must be a valid integer value", new RuntimeException());
         }
     }
