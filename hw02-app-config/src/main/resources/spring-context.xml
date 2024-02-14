@@ -10,6 +10,7 @@
         <constructor-arg index="0">
             <util:constant static-field="java.lang.System.out"/>
         </constructor-arg>
+
     </bean>
 
     <bean id="testService" class="ru.otus.hw.service.TestServiceImpl">
