@@ -1,32 +1,29 @@
 package ru.otus.hw.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import ru.otus.hw.dao.QuestionDao;
 import ru.otus.hw.domain.Answer;
 import ru.otus.hw.domain.Question;
+import ru.otus.hw.processor.QuestionProcessor;
 
+@Service
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
 
-    private final IOService ioService;
+    private final UserService userService;
 
-    private final QuestionDao questionDao;
+    private final QuestionProcessor questionProcessor;
+
+    private final ResultService resultService;
 
 
     @Override
     public void executeTest() {
 
-        ioService.printLine("");
-        ioService.printFormattedLine("Please answer the questions below%n");
+        userService.runUserProfileCreator();
+        questionProcessor.runProcess();
+        resultService.printResult();
 
-        for (Question question : questionDao.findAll()) {
-
-            ioService.printFormattedLine(question.text());
-
-            for (Answer answer : question.answers()) {
-                ioService.printLine("\t[ ] " + answer.text());
-            }
-            ioService.printLine("");
-        }
     }
 }

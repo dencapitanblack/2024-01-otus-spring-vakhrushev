@@ -5,4 +5,6 @@ public interface ResultService {
 
     void setAnswer(boolean isCorrect);
 
+    void printResult();
+
 }

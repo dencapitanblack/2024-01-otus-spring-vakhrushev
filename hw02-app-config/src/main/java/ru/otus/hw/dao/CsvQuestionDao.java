@@ -1,6 +1,7 @@
 package ru.otus.hw.dao;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 import ru.otus.hw.config.DataReader;
 import ru.otus.hw.dao.dto.QuestionDto;
 import ru.otus.hw.domain.Question;
@@ -9,7 +10,7 @@ import ru.otus.hw.exceptions.QuestionReadException;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Repository
 @RequiredArgsConstructor
 public class CsvQuestionDao implements QuestionDao {
 
