@@ -14,6 +14,8 @@ public class ResultServiceImpl implements ResultService {
     @Getter
     private int totalCountResult;
 
+    private final LocalizedMessageService localizedMessageService;
+
     @Override
     public void setAnswer(boolean isCorrect) {
         totalCountResult++;
@@ -25,6 +27,7 @@ public class ResultServiceImpl implements ResultService {
 
     @Override
     public String getResult() {
-        return String.format("Testing is over. Your result is %d out of %d", correctCountResult, totalCountResult);
+        String[] messageParams = new String[]{String.valueOf(correctCountResult), String.valueOf(totalCountResult)};
+        return localizedMessageService.getMessage("user.result", messageParams);
     }
 }

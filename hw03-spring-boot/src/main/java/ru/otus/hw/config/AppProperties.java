@@ -1,27 +1,22 @@
 package ru.otus.hw.config;
 
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Component;
+import lombok.Setter;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import java.util.Locale;
+import java.util.Map;
 
-@Getter
-@Component
+@Setter
+@ConfigurationProperties(prefix = "user", ignoreUnknownFields = false)
 public class AppProperties implements TestFileNameProvider, LocaleConfig {
 
-    private final String testFileName;
+    @Getter
+    private Locale locale;
 
-    private final String pathToFile;
+    private Map<String, String> fileNameByLocaleTag;
 
-    private final Locale locale;
-
-    public AppProperties(@Value("${user.filepath}") String pathToFile,
-                         @Value("${user.filename}") String testFileName,
-                         @Value("${user.locale}") Locale locale) {
-        this.testFileName = testFileName;
-        this.pathToFile = pathToFile;
-        this.locale = locale;
+    public String getTestFileName() {
+        return fileNameByLocaleTag.get(locale.toLanguageTag());
     }
-
 }

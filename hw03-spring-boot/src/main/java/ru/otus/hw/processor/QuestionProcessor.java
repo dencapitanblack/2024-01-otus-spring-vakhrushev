@@ -48,7 +48,4 @@ public class QuestionProcessor implements ProgramProcessor {
         }
     }
 
-    private void getUserAnswer() {
-
-    }
 }

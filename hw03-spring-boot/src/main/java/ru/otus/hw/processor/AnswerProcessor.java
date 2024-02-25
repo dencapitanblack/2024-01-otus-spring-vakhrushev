@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.otus.hw.exceptions.IncorrectInputException;
 import ru.otus.hw.service.IOService;
+import ru.otus.hw.service.LocalizedMessageService;
 import ru.otus.hw.service.ResultService;
 
 @Service
@@ -14,6 +15,8 @@ public class AnswerProcessor implements ProgramProcessor {
 
     private final IOService ioService;
 
+    private final LocalizedMessageService localizedMessageService;
+
     private int correctAnswer;
 
 
@@ -22,12 +25,15 @@ public class AnswerProcessor implements ProgramProcessor {
 
         while (true) {
             try {
-                ioService.printWithoutNewLine("Your answer is: ");
+
+                ioService.printWithoutNewLine(localizedMessageService.getMessage("process.answer.is"));
                 int userInput = ioService.getIntegerUserInput();
                 resultService.setAnswer(userInput == correctAnswer);
                 break;
+
             } catch (IncorrectInputException ex) {
-                ioService.printFormattedLine("Answer must be a valid integer number, please try again.");
+
+                ioService.printFormattedLine(localizedMessageService.getMessage("process.answer.input.exception"));
             }
         }
     }

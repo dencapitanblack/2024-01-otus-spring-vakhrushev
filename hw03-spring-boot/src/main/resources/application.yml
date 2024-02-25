@@ -1,7 +1,8 @@
 user:
-  filepath: ""
-  filename: "questions.csv"
   locale: ru_RU
+  fileNameByLocaleTag:
+    ru-RU: questions_ru.csv
+    en-US: questions.csv
 
 app:
   enable.aop : false
@@ -9,3 +10,9 @@ app:
 logging:
   level:
     root: info
+
+spring:
+  messages:
+    basename: "locale/appmessages"
+    encoding: "UTF-8"
+    fallbackToSystemLocale: false
