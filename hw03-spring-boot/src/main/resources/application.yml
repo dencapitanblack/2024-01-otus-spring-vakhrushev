@@ -1,0 +1,11 @@
+user:
+  filepath: ""
+  filename: "questions.csv"
+  locale: ru_RU
+
+app:
+  enable.aop : false
+
+logging:
+  level:
+    root: info
