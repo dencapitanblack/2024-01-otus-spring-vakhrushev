@@ -23,8 +23,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public void runUserProfileCreator() {
 
-
-
         ioService.printLine(messageSource.getMessage("user.welcome", null, appProperties.getLocale()));
         createUser();
 

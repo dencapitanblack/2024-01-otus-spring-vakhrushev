@@ -30,4 +30,5 @@ public class ResultServiceImpl implements ResultService {
         String[] messageParams = new String[]{String.valueOf(correctCountResult), String.valueOf(totalCountResult)};
         return localizedMessageService.getMessage("user.result", messageParams);
     }
+
 }

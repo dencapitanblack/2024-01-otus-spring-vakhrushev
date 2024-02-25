@@ -25,14 +25,12 @@ public class AnswerProcessor implements ProgramProcessor {
 
         while (true) {
             try {
-
                 ioService.printWithoutNewLine(localizedMessageService.getMessage("process.answer.is"));
                 int userInput = ioService.getIntegerUserInput();
                 resultService.setAnswer(userInput == correctAnswer);
                 break;
 
             } catch (IncorrectInputException ex) {
-
                 ioService.printFormattedLine(localizedMessageService.getMessage("process.answer.input.exception"));
             }
         }
