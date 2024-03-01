@@ -5,3 +5,5 @@ OTUS education spring framework
 		
  - hw02 - Homework 02. Spring with java annotation/java based configuration.
 		Student testing app (read/output questions, input answers, shows result)
+
+ - hw03 - Homework 03. Spring boot student testing app.
