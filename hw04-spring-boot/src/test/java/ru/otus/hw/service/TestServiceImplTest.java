@@ -1,35 +1,27 @@
 package ru.otus.hw.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import ru.otus.hw.processor.QuestionProcessor;
 
 import static org.mockito.Mockito.doAnswer;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class TestServiceImplTest {
 
-    @Mock
+    @MockBean
     private UserService userService;
 
-    @Mock
+    @MockBean
     private QuestionProcessor questionProcessor;
 
-    @Mock
+    @MockBean
     private ResultService resultService;
 
-    @Mock
-    private IOService ioService;
-
+    @Autowired
     private TestServiceImpl testService;
-
-    @BeforeEach
-    void setUp() {
-        testService = new TestServiceImpl(userService,questionProcessor,resultService,ioService);
-    }
 
     @Test
     void executeTest() {

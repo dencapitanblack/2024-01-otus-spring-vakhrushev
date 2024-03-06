@@ -1,26 +1,21 @@
 package ru.otus.hw.service;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
+@SpringBootTest
 class ResultServiceImplTest {
 
-    @Mock
+    @MockBean
     private LocalizedMessageService localizedMessageService;
 
+    @Autowired
     private ResultServiceImpl resultService;
-
-    @BeforeEach
-    void setUp() {
-        resultService = new ResultServiceImpl(localizedMessageService);
-    }
 
     @Test
     void setAnswer() {
@@ -31,7 +26,8 @@ class ResultServiceImplTest {
 
     @Test
     void getResult() {
-        when(localizedMessageService.getMessage("user.result", new String[] {"0", "0"})).thenReturn("testCode");
+        String[] messageParams = new String[] {String.valueOf(resultService.getCorrectCountResult()), String.valueOf(resultService.getTotalCountResult())};
+        when(localizedMessageService.getMessage("user.result", messageParams)).thenReturn("testCode");
         assertEquals("testCode", resultService.getResult());
     }
 }

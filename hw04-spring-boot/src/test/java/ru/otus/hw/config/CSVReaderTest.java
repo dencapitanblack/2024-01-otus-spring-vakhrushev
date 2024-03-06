@@ -1,24 +1,20 @@
 package ru.otus.hw.config;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+
 import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-class CSVReaderUnitTest {
+@SpringBootTest(classes = {CSVReader.class})
+class CSVReaderTest {
 
-    @Mock
+    @MockBean
     private TestFileNameProvider fileNameProvider;
 
+    @Autowired
     private CSVReader csvReader;
-
-    @BeforeEach
-    void setUp() {
-        csvReader = new CSVReader(fileNameProvider);
-    }
 
     @Test
     void readData() {
