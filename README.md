@@ -10,3 +10,5 @@ OTUS education spring framework
  
  - hw04 - Homework 04. Spring boot student testing app.
 		Add Spring shell and SpringBootTest
+
+ - hw05 - Homework 05. Spring JDBC app (CRUD book, author, genre)
