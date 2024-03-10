@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/1.0/2024-03-10--create-table-author.yaml
+  - include:
+      file: db/changelog/1.0/2024-03-10--create-table-genre.yaml
+  - include:
+      file: db/changelog/1.0/2024-03-10--create-table-book.yaml
+  - include:
+      file: db/changelog/1.0/2024-03-10--insert-data.sql
