@@ -7,3 +7,6 @@ OTUS education spring framework
 		Student testing app (read/output questions, input answers, shows result)
 
  - hw03 - Homework 03. Spring boot student testing app.
+ 
+ - hw04 - Homework 04. Spring boot student testing app.
+		Add Spring shell and SpringBootTest

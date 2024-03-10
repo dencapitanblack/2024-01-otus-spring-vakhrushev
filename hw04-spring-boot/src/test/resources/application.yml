@@ -1,0 +1,21 @@
+user:
+  locale: ru_RU
+  fileNameByLocaleTag:
+    ru-RU: questions_ru.csv
+    en-US: questions.csv
+
+app:
+  enable.aop : false
+
+logging:
+  level:
+    root: off
+
+spring:
+  messages:
+    basename: "locale/appmessages"
+    encoding: "UTF-8"
+    fallbackToSystemLocale: false
+  shell:
+    interactive:
+      enabled: false
