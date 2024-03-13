@@ -1,8 +1,6 @@
-insert into author(fullname)
-values ('Author_1'), ('Author_2'), ('Author_3');
+--liquibase formatted sql
 
-insert into genre(genrename)
-values ('Genre_1'), ('Genre_2'), ('Genre_3');
-
-insert into book(title, authorid, genreid)
-values ('BookTitle_1', 1, 1), ('BookTitle_2', 2, 2), ('BookTitle_3', 3, 3);
+--changeset dvakhrushev:2024-03-10--insert-data
+insert into author(fullname) values ('A. Pushkin'), ('A. Hayley'), ('K. Smith'), ('Z. Freud');
+insert into genre(genrename) values ('Fiction'), ('Non-fiction'), ('Drama'), ('Chick lit'), ('Fantasy'), ('Travels book'), ('Fairy tale');
+insert into book(title, authorid, genreid) values ('BookTitle_pr', 1, 1), ('BookTitle_2pr', 2, 2), ('BookTitle_3pr', 3, 3);

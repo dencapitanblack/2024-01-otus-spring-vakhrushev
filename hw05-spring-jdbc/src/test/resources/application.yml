@@ -9,4 +9,8 @@ spring:
       enabled: true
   shell:
     interactive:
-      enabled: true
+      enabled: false
+  sql:
+    init:
+      mode: always
+      data-locations: data.sql

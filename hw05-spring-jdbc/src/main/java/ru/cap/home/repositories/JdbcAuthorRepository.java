@@ -1,6 +1,7 @@
 package ru.cap.home.repositories;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
@@ -26,18 +27,19 @@ public class JdbcAuthorRepository implements AuthorRepository {
 
         Map<String, Object> params = Collections.singletonMap("id", id);
 
-        Optional<Author> author = Optional.ofNullable(
-                namedParameterJdbcOperations.queryForObject(
-                "select id, fullname from author where id = :id",
-                params, new AuthorMapper()));
+        List<Author> authorList = namedParameterJdbcOperations
+                    .query("select id, fullname from author where id = :id", params, new AuthorMapper());
 
-        return author;
+        if (authorList.isEmpty())
+            return Optional.empty();
+
+        return Optional.ofNullable(authorList.get(0));
     }
 
     private static class AuthorMapper implements RowMapper<Author> {
         @Override
         public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
-
+            
             long id = rs.getLong("id");
             String fullName = rs.getString("fullname");
 

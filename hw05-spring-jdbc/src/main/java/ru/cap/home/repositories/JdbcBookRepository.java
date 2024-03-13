@@ -7,7 +7,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import ru.cap.home.exceptions.EntityNotFoundException;
+import ru.cap.home.models.Author;
 import ru.cap.home.models.Book;
+import ru.cap.home.models.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -23,17 +25,24 @@ public class JdbcBookRepository implements BookRepository {
     public Optional<Book> findById(long id) {
 
         Map<String, Object> params = Collections.singletonMap("id", id);
-        Book book = namedParameterJdbcOperations.
-                queryForObject("select * from book where id = :id", params, new BookMapper());
 
-        Optional<Book> optionalBook = Optional.ofNullable(book);
+        List<Book> bookList = namedParameterJdbcOperations.
+                query("select book.id, book.title, book.authorid, book.genreid, author.fullname, genre.genrename from book " +
+                          "left join author on author.id = book.authorid " +
+                          "left join genre on genre.id = book.genreid where book.id = :id", params, new BookMapper());
 
-        return optionalBook;
+        if (bookList.isEmpty())
+            return Optional.empty();
+
+        return Optional.ofNullable(bookList.get(0));
     }
 
     @Override
     public List<Book> findAll() {
-        return namedParameterJdbcOperations.query("select * from book", new BookMapper());
+        return namedParameterJdbcOperations.query(
+                "select book.id, book.title, book.authorid, book.genreid, author.fullname, genre.genrename from book " +
+                    "left join author on author.id = book.authorid " +
+                    "left join genre on genre.id = book.genreid", new BookMapper());
     }
 
     @Override
@@ -50,15 +59,17 @@ public class JdbcBookRepository implements BookRepository {
         Map<String, Object> params = new HashMap<>();
         params.put("id", book.getId());
         params.put("title", book.getTitle());
-        params.put("authorid", book.getAuthor().getId());
-        params.put("genreid", book.getGenre().getId());
+        params.put("authorId", book.getAuthor().getId());
+        params.put("genreId", book.getGenre().getId());
+
+        // TODO hasRec
 
         Integer hasRec = namedParameterJdbcOperations
                 .queryForObject("select 1 from book where id = :id", params, Integer.class);
 
         if (hasRec != null && hasRec == 1) {
             namedParameterJdbcOperations
-                    .update("update book set title = :title, authorid = :authorid, genreid = :genreid where id = :id", params);
+                    .update("update book set title = :title, authorid = :authorId, genreid = :genreId where id = :id", params);
         } else {
             throw new EntityNotFoundException("No record found for update");
         }
@@ -72,12 +83,12 @@ public class JdbcBookRepository implements BookRepository {
 
         Map<String, Object> params = new HashMap<>();
         params.put("title", book.getTitle());
-        params.put("authorid", book.getAuthor().getId());
-        params.put("genreid", book.getGenre().getId());
+        params.put("authorId", book.getAuthor().getId());
+        params.put("genreId", book.getGenre().getId());
 
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource(params);
 
-        namedParameterJdbcOperations.update("insert into book (title, authorid, genreid) values (:title, :authorid, :genreid)",
+        namedParameterJdbcOperations.update("insert into book (title, authorid, genreid) values (:title, :authorId, :genreId)",
                 sqlParameterSource,
                 keyHolder);
 
@@ -100,10 +111,24 @@ public class JdbcBookRepository implements BookRepository {
 
             long id = rs.getLong("id");
             String title = rs.getString("title");
+            long authorId = rs.getLong("authorId");
+            long genreId = rs.getLong("genreId");
+            String genreName = rs.getString("genreName");
+            String fullName = rs.getString("fullName");
+
+            Author author = new Author();
+            author.setFullName(fullName);
+            author.setId(authorId);
+
+            Genre genre = new Genre();
+            genre.setGenreName(genreName);
+            genre.setId(genreId);
 
             Book book = new Book();
             book.setId(id);
             book.setTitle(title);
+            book.setGenre(genre);
+            book.setAuthor(author);
 
             return book;
         }
