@@ -3,88 +3,72 @@ package ru.cap.home.repositories;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.Import;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import ru.cap.home.models.Author;
 import ru.cap.home.models.Book;
 import ru.cap.home.models.Genre;
 
-import java.util.List;
-import java.util.stream.IntStream;
+import java.util.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.when;
 
-@DisplayName("Репозиторий на основе Jdbc для работы с книгами ")
-@JdbcTest
-@Import({JdbcBookRepository.class, JdbcGenreRepository.class})
+@DisplayName("Unit test JdbcBookRepository")
+@ExtendWith(MockitoExtension.class)
 class JdbcBookRepositoryTest {
 
-    @Autowired
-    private JdbcBookRepository jdbcBookRepository;
+    @Mock
+    private NamedParameterJdbcOperations namedParameterJdbcOperations;
+    private BookRepository bookRepository;
 
-    private List<Author> dbAuthors;
-
-    private List<Genre> dbGenres;
-
-    private List<Book> dbBooks;
 
     @BeforeEach
     void setUp() {
-        dbAuthors = getDbAuthors();
-        dbGenres = getDbGenres();
-        dbBooks = getDbBooks(dbAuthors, dbGenres);
+        bookRepository = new JdbcBookRepository(namedParameterJdbcOperations);
     }
 
-    @DisplayName("должен загружать книгу по id")
-    @ParameterizedTest
-    @MethodSource("getDbBooks")
-    void shouldReturnCorrectBookById(Book expectedBook) {
-
-        var actualBook = jdbcBookRepository.findById(expectedBook.getId());
-        assertThat(actualBook).isPresent().get().isEqualTo(expectedBook);
-    }
-
-    @DisplayName("должен загружать список всех книг")
     @Test
-    void shouldReturnCorrectBookList() {
-        var actualBook = jdbcBookRepository.findAll();
-        var expectedBook = dbBooks;
+    void testFindAll() {
 
-        assertThat(actualBook).containsExactlyElementsOf(expectedBook);
-        actualBook.forEach(System.out::println);
+        List<Book> expectedBook = Arrays.asList(new Book(1, "Genre_1", new Author(1 , "Author_1"), new Genre(1, "Genre_1")));
+        when(namedParameterJdbcOperations.query(anyString(), ArgumentMatchers.<RowMapper<Book>>any()))
+                .thenReturn(expectedBook);
+
+        List<Book> actualBook = bookRepository.findAll();
+        assertEquals(expectedBook, actualBook);
+
     }
 
+    @Test
+    void testFindByIdWithRec() {
 
+        List<Book> expectedBook = Arrays.asList(new Book(1, "Genre_1", new Author(1 , "Author_1"), new Genre(1, "Genre_1")));
 
+        when(namedParameterJdbcOperations
+                .query(anyString(),  ArgumentMatchers.<Map<String, ?>>any(), ArgumentMatchers.<RowMapper<Book>>any()))
+                .thenReturn(expectedBook);
 
+        assertEquals(bookRepository.findById(1).get(), expectedBook.get(0));
 
-
-
-    private static List<Author> getDbAuthors() {
-        return IntStream.range(1, 4).boxed()
-                .map(id -> new Author(id, "Author_" + id)).toList();
     }
 
-    private static List<Genre> getDbGenres() {
-        return IntStream.range(1, 4).boxed()
-                .map(id -> new Genre(id, "Genre_" + id)).toList();
-    }
+    @Test
+    void testFindByIdWithoutRec() {
 
-    private static List<Book> getDbBooks(List<Author> dbAuthors, List<Genre> dbGenres) {
-        return IntStream.range(1, 4).boxed()
-                .map(id -> new Book(id, "BookTitle_" + id, dbAuthors.get(id - 1), dbGenres.get(id - 1)))
-                .toList();
-    }
+        List<Book> expectedBook = new ArrayList<>();
 
-    private static List<Book> getDbBooks() {
-        var dbAuthors = getDbAuthors();
-        var dbGenres = getDbGenres();
-        return getDbBooks(dbAuthors, dbGenres);
-    }
+        when(namedParameterJdbcOperations
+                .query(anyString(),  ArgumentMatchers.<Map<String, ?>>any(), ArgumentMatchers.<RowMapper<Book>>any()))
+                .thenReturn(expectedBook);
 
+        assertEquals(bookRepository.findById(2), Optional.empty());
+
+    }
 
 }

@@ -1,15 +1,15 @@
 package ru.cap.home.repositories;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.stereotype.Repository;
 import ru.cap.home.models.Author;
+import ru.cap.home.repositories.mappers.AuthorMapper;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -36,14 +36,4 @@ public class JdbcAuthorRepository implements AuthorRepository {
         return Optional.ofNullable(authorList.get(0));
     }
 
-    private static class AuthorMapper implements RowMapper<Author> {
-        @Override
-        public Author mapRow(ResultSet rs, int rowNum) throws SQLException {
-            
-            long id = rs.getLong("id");
-            String fullName = rs.getString("fullname");
-
-            return new Author(id, fullName);
-        }
-    }
 }
