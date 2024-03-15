@@ -10,5 +10,6 @@ import lombok.NoArgsConstructor;
 public class Genre {
 
     private long id;
+
     private String genreName;
 }

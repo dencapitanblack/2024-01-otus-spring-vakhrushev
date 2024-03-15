@@ -30,8 +30,9 @@ public class JdbcAuthorRepository implements AuthorRepository {
         List<Author> authorList = namedParameterJdbcOperations
                     .query("select id, fullname from author where id = :id", params, new AuthorMapper());
 
-        if (authorList.isEmpty())
+        if (authorList.isEmpty()) {
             return Optional.empty();
+        }
 
         return Optional.ofNullable(authorList.get(0));
     }

@@ -9,7 +9,11 @@ import ru.cap.home.exceptions.EntityNotFoundException;
 import ru.cap.home.models.Book;
 import ru.cap.home.repositories.mappers.BookMapper;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.HashMap;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,12 +27,14 @@ public class JdbcBookRepository implements BookRepository {
         Map<String, Object> params = Collections.singletonMap("id", id);
 
         List<Book> bookList = namedParameterJdbcOperations.
-                query("select book.id, book.title, book.authorid, book.genreid, author.fullname, genre.genrename from book " +
-                          "left join author on author.id = book.authorid " +
-                          "left join genre on genre.id = book.genreid where book.id = :id", params, new BookMapper());
+        query("select book.id, book.title, book.authorid, book.genreid, author.fullname, genre.genrename " +
+                  "from book " +
+                  "left join author on author.id = book.authorid " +
+                  "left join genre on genre.id = book.genreid where book.id = :id", params, new BookMapper());
 
-        if (bookList.isEmpty())
+        if (bookList.isEmpty()) {
             return Optional.empty();
+        }
 
         return Optional.ofNullable(bookList.get(0));
     }
@@ -58,17 +64,11 @@ public class JdbcBookRepository implements BookRepository {
         params.put("authorId", book.getAuthor().getId());
         params.put("genreId", book.getGenre().getId());
 
-        // TODO hasRec
+        findById(book.getId()).orElseThrow(() -> new EntityNotFoundException("No record found for update"));
 
-        Integer hasRec = namedParameterJdbcOperations
-                .queryForObject("select 1 from book where id = :id", params, Integer.class);
-
-        if (hasRec != null && hasRec == 1) {
-            namedParameterJdbcOperations
-                    .update("update book set title = :title, authorid = :authorId, genreid = :genreId where id = :id", params);
-        } else {
-            throw new EntityNotFoundException("No record found for update");
-        }
+         namedParameterJdbcOperations
+            .update("update book set title = :title, authorid = :authorId, genreid = :genreId " +
+                        "where id = :id", params);
 
         return book;
     }
@@ -84,9 +84,10 @@ public class JdbcBookRepository implements BookRepository {
 
         MapSqlParameterSource sqlParameterSource = new MapSqlParameterSource(params);
 
-        namedParameterJdbcOperations.update("insert into book (title, authorid, genreid) values (:title, :authorId, :genreId)",
-                sqlParameterSource,
-                keyHolder);
+        namedParameterJdbcOperations.update("insert into book (title, authorid, genreid) " +
+                                                "values (:title, :authorId, :genreId)",
+                                                sqlParameterSource,
+                                                keyHolder);
 
         book.setId(keyHolder.getKeyAs(Long.class));
 

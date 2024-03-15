@@ -16,6 +16,7 @@ import java.util.Optional;
 public class JdbcGenreRepository implements GenreRepository {
 
     private final NamedParameterJdbcOperations namedParameterJdbcOperations;
+
     @Override
     public List<Genre> findAll() {
         return namedParameterJdbcOperations.query("select * from genre", new GenreMapper());
@@ -26,10 +27,12 @@ public class JdbcGenreRepository implements GenreRepository {
 
         Map<String, Object> params = Collections.singletonMap("id", id);
 
-        List<Genre> genreList = namedParameterJdbcOperations.query("select * from genre where id = :id", params, new GenreMapper());
+        List<Genre> genreList = namedParameterJdbcOperations
+                .query("select * from genre where id = :id", params, new GenreMapper());
 
-        if (genreList.isEmpty())
+        if (genreList.isEmpty()) {
             return Optional.empty();
+        }
 
         return Optional.ofNullable(genreList.get(0));
     }

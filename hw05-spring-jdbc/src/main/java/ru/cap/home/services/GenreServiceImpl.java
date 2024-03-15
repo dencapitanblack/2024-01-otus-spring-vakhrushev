@@ -2,7 +2,6 @@ package ru.cap.home.services;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.cap.home.exceptions.EntityNotFoundException;
 import ru.cap.home.models.Genre;
 import ru.cap.home.repositories.GenreRepository;
 
