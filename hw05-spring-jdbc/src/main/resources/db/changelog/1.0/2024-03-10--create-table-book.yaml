@@ -1,0 +1,39 @@
+databaseChangeLog:
+  - changeSet:
+      id: 2024-03-10--create-table-book
+      author: dvakhrushev
+      changes:
+        - createTable:
+            tableName: book
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_book
+              - column:
+                  name: title
+                  type: varchar(255)
+              - column:
+                  name: authorid
+                  type: bigint
+              - column:
+                  name: genreid
+                  type: bigint
+        - addForeignKeyConstraint:
+            onDelete: CASCADE
+            baseTableName: book
+            baseColumnNames: authorid
+            constraintName: fk_book_author
+            referencedTableName: author
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            onDelete: CASCADE
+            baseTableName: book
+            baseColumnNames: genreid
+            constraintName: fk_book_genre
+            referencedTableName: genre
+            referencedColumnNames: id
