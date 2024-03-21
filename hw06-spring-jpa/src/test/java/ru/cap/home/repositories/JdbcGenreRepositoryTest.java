@@ -9,9 +9,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
-import ru.cap.home.models.Author;
 import ru.cap.home.models.Genre;
-import ru.cap.home.repositories.mappers.GenreMapper;
 
 import java.util.*;
 

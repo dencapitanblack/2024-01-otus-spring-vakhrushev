@@ -9,9 +9,13 @@ spring:
       enabled: true
   shell:
     interactive:
-      enabled: true
+      enabled: false
   main:
     banner-mode: off
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
 logging:
   level:
-    root: off
+    root: info
