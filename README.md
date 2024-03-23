@@ -12,3 +12,7 @@ OTUS education spring framework
 		Add Spring shell and SpringBootTest
 
  - hw05 - Homework 05. Spring JDBC app (CRUD book, author, genre)
+		Spring JDBC realization.
+ 
+ - hw06 - Homework 06. Spring JDBC app (CRUD book, CRUD comments author, genre)
+		Spring JPA realization. (ORM, Hibernate, JPA)
