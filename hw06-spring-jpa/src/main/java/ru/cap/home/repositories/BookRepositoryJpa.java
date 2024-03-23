@@ -1,18 +1,14 @@
 package ru.cap.home.repositories;
 
-import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import ru.cap.home.models.Book;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.data.jpa.repository.EntityGraph.EntityGraphType.FETCH;
 
 @Repository
 @RequiredArgsConstructor
@@ -28,10 +24,10 @@ public class BookRepositoryJpa implements BookRepository {
     }
 
     @Override
-    @Transactional
     public List<Book> findAll() {
 
-        TypedQuery<Book> query = em.createQuery("select distinct b from Book b", Book.class);
+        TypedQuery<Book> query = em.createQuery("select distinct b from Book b left join fetch b.authors " +
+                "left join fetch b.genres ", Book.class);
         return query.getResultList();
     }
 

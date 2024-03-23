@@ -4,10 +4,7 @@ insert into author(full_name) values ('author_2');
 insert into genre(genre_name) values ('genre_1');
 insert into genre(genre_name) values ('genre_2');
 insert into genre(genre_name) values ('genre_3');
-insert into genre(genre_name) values ('genre_4');
-insert into genre(genre_name) values ('genre_5');
-insert into genre(genre_name) values ('genre_6');
-insert into genre(genre_name) values ('genre_7');
+
 
 insert into book(title) values ('title_1');
 insert into book(title) values ('title_2');

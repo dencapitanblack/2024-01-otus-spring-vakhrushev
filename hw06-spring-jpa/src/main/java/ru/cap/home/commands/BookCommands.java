@@ -8,7 +8,7 @@ import ru.cap.home.converters.BookConverter;
 import ru.cap.home.models.Book;
 import ru.cap.home.service.BookService;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @ShellComponent
@@ -22,18 +22,21 @@ public class BookCommands {
 
     @ShellMethod(value = "Show all book", key = {"b", "book"})
     public String findAllBook() {
-        return bookService.findAll().stream().map(bookConverter::bookToString)
+
+        String bookView = bookService.findAll().stream().map(bookConverter::bookToString)
                 .collect(Collectors.joining("," + System.lineSeparator()));
+
+        return bookView.isEmpty() ? "Book not found" : bookView;
     }
 
     @ShellMethod(value = "Add book", key = {"ab", "addbook"})
     public String addBook(
             @ShellOption(help = "Give the title of book") String title,
-            @ShellOption(help = "Give an id of author", value = "author") long authorId,
-            @ShellOption(help = "Give an id of genre", value = "genre") long genreId) {
+            @ShellOption(help = "Give an id of authors with comma (',') separated", value = "author") Set<Long> authorId,
+            @ShellOption(help = "Give an id of genres with comma (',') separated", value = "genre") Set<Long> genreId) {
 
 
-            Book book = bookService.insert(title, List.of(authorId), List.of(genreId));
+            Book book = bookService.insert(title, authorId, genreId);
 
         return "Book was added \n" + bookConverter.bookToString(book);
 
@@ -44,9 +47,9 @@ public class BookCommands {
             @ShellOption(help = "Give the title of book", value = "title") String title,
             @ShellOption(help = "Give an id of book", value = "book") long bookId) {
 
-        Book book = bookService.update(bookId, title);
+        bookService.update(bookId, title);
 
-        return "Book was updated \n" + bookConverter.bookToString(book);
+        return "Book was updated!";
     }
 
     @ShellMethod(value = "Remove book", key = {"rb", "removebook"})

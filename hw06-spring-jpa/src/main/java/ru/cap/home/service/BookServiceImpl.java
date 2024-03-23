@@ -2,6 +2,7 @@ package ru.cap.home.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.cap.home.exceptions.EntityNotFoundException;
 import ru.cap.home.models.Author;
 import ru.cap.home.models.Book;
@@ -11,6 +12,8 @@ import ru.cap.home.repositories.BookRepository;
 import ru.cap.home.repositories.GenreRepository;
 
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,27 +26,32 @@ public class BookServiceImpl implements BookService {
     private final GenreRepository genreRepository;
 
     @Override
+    @Transactional(readOnly = true)
     public Book findById(long id) {
         return bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Comment with id = %id not found".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException("Book with id = %d not found".formatted(id)));
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Book> findAll() {
         return bookRepository.findAll();
     }
 
     @Override
-    public Book insert(String title, List<Long> idAuthors, List<Long> idGenres) {
+    @Transactional
+    public Book insert(String title, Set<Long> idAuthors, Set<Long> idGenres) {
         return save(0, title, idAuthors, idGenres);
     }
 
     @Override
-    public Book update(long id, String title, List<Long> idAuthors, List<Long> idGenres) {
+    @Transactional
+    public Book update(long id, String title, Set<Long> idAuthors, Set<Long> idGenres) {
         return save(id, title, idAuthors, idGenres);
     }
 
     @Override
+    @Transactional
     public Book update(long id, String title) {
         Book book = findById(id);
         book.setTitle(title);
@@ -51,23 +59,24 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
         bookRepository.deleteById(id);
     }
 
-    private Book save(long id, String title, List<Long> idAuthors, List<Long> idGenres) {
+    private Book save(long id, String title, Set<Long> idAuthors, Set<Long> idGenres) {
 
         title = String.join(" ", title.split(","));
 
-        List<Author> authors = idAuthors.stream()
+        Set<Author> authors = idAuthors.stream()
                 .map(a -> authorRepository.findById(a)
                 .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(a))))
-                .toList();
+                .collect(Collectors.toSet());
 
-        List<Genre> genres = idGenres.stream()
+        Set<Genre> genres = idGenres.stream()
                 .map(g -> genreRepository.findById(g)
-                        .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(g))))
-                .toList();
+                        .orElseThrow(() -> new EntityNotFoundException("Genre with id %d not found".formatted(g))))
+                .collect(Collectors.toSet());
 
         var book = new Book(id, title, authors, genres);
         return bookRepository.save(book);

@@ -3,6 +3,7 @@ package ru.cap.home.service;
 import ru.cap.home.models.Book;
 
 import java.util.List;
+import java.util.Set;
 
 public interface BookService {
 
@@ -10,9 +11,9 @@ public interface BookService {
 
     List<Book> findAll();
 
-    Book insert(String title, List<Long> idAuthors, List<Long> idGenres);
+    Book insert(String title, Set<Long> idAuthors, Set<Long> idGenres);
 
-    Book update(long id, String title, List<Long> idAuthors, List<Long> idGenres);
+    Book update(long id, String title, Set<Long> idAuthors, Set<Long> idGenres);
 
     Book update(long id, String title);
 

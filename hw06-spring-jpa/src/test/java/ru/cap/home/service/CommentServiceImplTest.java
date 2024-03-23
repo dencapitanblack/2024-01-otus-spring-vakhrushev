@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class CommentServiceImplTest {
@@ -30,6 +30,14 @@ class CommentServiceImplTest {
         List<Comment> commentList = Arrays.asList(new Comment("comment_1", new Book()), new Comment("comment_1", new Book()));
         when(commentRepository.findCommentsByBookId(1)).thenReturn(commentList);
         assertThat(commentService.findAllByBookId(1)).hasSize(2);
+    }
+
+    @Test
+    void delete() {
+
+        when(commentRepository.findCommentById(1)).thenReturn(Optional.of(new Comment(1, "test", new Book())));
+        commentService.deleteComment(1);
+        verify(commentRepository, times(1)).deleteCommentById(1);
     }
 
 }

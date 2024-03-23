@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.Import;
-import ru.cap.home.models.Author;
 import ru.cap.home.models.Book;
 import ru.cap.home.models.Comment;
 
@@ -71,12 +70,7 @@ class CommentRepositoryJpaIT {
     @Test
     void givenComment_whenFindByBookId_thenSuccess() {
 
-        Author author = new Author("test_author_1");
-        Book book = new Book();
-        book.setTitle("title");
-        book.setAuthors(Arrays.asList(author));
-
-        em.persist(book);
+        Book book = em.find(Book.class, 1);
 
         Comment comment1 = new Comment("comment_1", book);
         Comment comment2 = new Comment("comment_1", book);

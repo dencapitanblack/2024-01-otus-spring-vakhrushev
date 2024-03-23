@@ -1,11 +1,23 @@
 package ru.cap.home.models;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Column;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.CascadeType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Data
@@ -30,20 +42,20 @@ public class Book {
 
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = Genre.class, cascade = CascadeType.PERSIST)
     @JoinTable(name = "book_genre", joinColumns = @JoinColumn(name = "book_id"))
-    private List<Genre> genres;
+    private Set<Genre> genres;
 
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = Author.class, cascade = CascadeType.PERSIST)
     @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
-    private List<Author> authors;
+    private Set<Author> authors;
 
-    public Book(String title, List<Genre> genres, List<Author> authors) {
+    public Book(String title, Set<Genre> genres, Set<Author> authors) {
         this.title = title;
         this.genres = genres;
         this.authors = authors;
     }
 
-    public Book(long id, String title, List<Author> authors, List<Genre> genres) {
+    public Book(long id, String title, Set<Author> authors, Set<Genre> genres) {
         this.id = id;
         this.title = title;
         this.genres = genres;

@@ -9,7 +9,7 @@ import ru.cap.home.models.Author;
 import ru.cap.home.models.Book;
 import ru.cap.home.models.Genre;
 
-import java.util.List;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,7 +35,7 @@ class BookRepositoryJpaIT {
 
     @Test
     void givenNewBook_whenSave_thenSuccess() {
-        Book book = new Book("title", List.of(em.find(Genre.class, 1)), List.of(em.find(Author.class, 1)));
+        Book book = new Book("title", Set.of(em.find(Genre.class, 1)), Set.of(em.find(Author.class, 1)));
         repositoryJpa.save(book);
         assertThat(book.getId()).isNotEqualTo(0);
     }

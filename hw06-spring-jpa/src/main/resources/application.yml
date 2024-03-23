@@ -6,7 +6,7 @@ spring:
       path: /h2-console
       settings:
         web-allow-others: true
-      enabled: true
+      enabled: false
   shell:
     interactive:
       enabled: true
@@ -15,7 +15,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-    show-sql: true
+    show-sql: false
     properties:
       hibernate:
         format_sql: true
@@ -24,5 +24,5 @@ spring:
       mode: always
 logging:
   level:
-    root: info
+    root: off
 
