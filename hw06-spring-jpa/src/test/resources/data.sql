@@ -1,12 +1,6 @@
-delete from book;
-delete from author;
-delete from genre;
-
-insert into author(id, fullname)
-values (1, 'Author_1'), (2, 'Author_2'), (3, 'Author_3');
-
-insert into genre(id, genrename)
-values (1, 'Genre_1'), (2, 'Genre_2'), (3, 'Genre_3');
-
-insert into book(id, title, authorid, genreid)
-values (1, 'BookTitle_1', 1, 1), (2, 'BookTitle_2', 2, 2), (3, 'BookTitle_3', 3, 3);
+insert into author(full_name) values ('author_1');
+insert into book(title) values ('title_1');
+insert into comment(comment, book_id) values ('comment_1_1', 1);
+insert into comment(comment, book_id) values ('comment_1_2', 1);
+insert into comment(comment, book_id) values ('comment_1_3', 1);
+insert into comment(comment, book_id) values ('comment_1_4', 1);
