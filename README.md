@@ -16,3 +16,6 @@ OTUS education spring framework
  
  - hw06 - Homework 06. Spring JDBC app (CRUD book, CRUD comments author, genre)
 		Spring JPA realization. (ORM, Hibernate, JPA)
+		
+ - hw07 - Homework 07. Spring JDBC app (CRUD book, CRUD comments author, genre)
+		Spring Data JPA realization. 
