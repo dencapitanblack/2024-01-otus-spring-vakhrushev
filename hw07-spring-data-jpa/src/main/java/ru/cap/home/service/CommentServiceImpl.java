@@ -19,7 +19,7 @@ public class CommentServiceImpl implements CommentService {
     private final BookService bookService;
 
     private Comment findCommentById(long id) {
-        return commentRepository.findCommentById(id)
+        return commentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Comment with id = %d not found".formatted(id)));
     }
 
@@ -33,7 +33,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteComment(long commentId) {
-        commentRepository.deleteCommentById(findCommentById(commentId).getId());
+        commentRepository.deleteById(findCommentById(commentId).getId());
     }
 
     @Override
