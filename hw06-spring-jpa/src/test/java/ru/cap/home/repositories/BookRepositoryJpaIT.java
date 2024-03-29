@@ -35,7 +35,12 @@ class BookRepositoryJpaIT {
 
     @Test
     void givenNewBook_whenSave_thenSuccess() {
-        Book book = new Book("title", Set.of(em.find(Genre.class, 1)), Set.of(em.find(Author.class, 1)));
+        Book book = Book.builder()
+                .title("title")
+                .genres(Set.of(em.find(Genre.class, 1)))
+                .authors(Set.of(em.find(Author.class, 1)))
+                .build();
+
         repositoryJpa.save(book);
         assertThat(book.getId()).isNotEqualTo(0);
     }

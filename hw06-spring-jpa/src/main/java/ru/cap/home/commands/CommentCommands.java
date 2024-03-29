@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
+import org.springframework.transaction.annotation.Transactional;
 import ru.cap.home.converters.CommentConverter;
+import ru.cap.home.service.BookService;
 import ru.cap.home.service.CommentService;
 
 import java.util.stream.Collectors;
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
 public class CommentCommands {
 
     private final CommentService commentService;
+
+    private final BookService bookService;
 
     private final CommentConverter commentConverter;
 
@@ -26,6 +30,7 @@ public class CommentCommands {
     }
 
     @ShellMethod(value = "Read comment", key = "cread")
+    @Transactional
     public String readComment(@ShellOption(help = "Give an id of book", value = "book") long bookId) {
 
         String commentView = commentService.findAllByBookId(bookId).stream().map(commentConverter::commentToString)

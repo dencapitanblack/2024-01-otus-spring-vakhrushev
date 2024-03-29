@@ -13,6 +13,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.CascadeType;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,7 @@ import java.util.Set;
 
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
@@ -34,7 +36,6 @@ public class Book {
     @Column(name = "title", nullable = false)
     private String title;
 
-    // entity graph
     @OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     @JoinColumn(name = "book_id")
     private List<Comment> comments;
@@ -48,19 +49,6 @@ public class Book {
     @JoinTable(name = "book_author", joinColumns = @JoinColumn(name = "book_id"),
             inverseJoinColumns = @JoinColumn(name = "author_id"))
     private Set<Author> authors;
-
-    public Book(String title, Set<Genre> genres, Set<Author> authors) {
-        this.title = title;
-        this.genres = genres;
-        this.authors = authors;
-    }
-
-    public Book(long id, String title, Set<Author> authors, Set<Genre> genres) {
-        this.id = id;
-        this.title = title;
-        this.genres = genres;
-        this.authors = authors;
-    }
 
     @Override
     public String toString() {

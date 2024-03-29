@@ -13,8 +13,6 @@ public interface BookService {
 
     Book insert(String title, Set<Long> idAuthors, Set<Long> idGenres);
 
-    Book update(long id, String title, Set<Long> idAuthors, Set<Long> idGenres);
-
     Book update(long id, String title);
 
     void deleteById(long id);

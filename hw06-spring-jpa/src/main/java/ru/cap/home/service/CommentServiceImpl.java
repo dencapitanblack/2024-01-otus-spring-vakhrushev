@@ -1,5 +1,6 @@
 package ru.cap.home.service;
 
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,9 +25,9 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
     public List<Comment> findAllByBookId(long id) {
-        return commentRepository.findCommentsByBookId(id);
+        List<Comment> comments = bookService.findById(id).getComments();
+        return comments;
     }
 
 

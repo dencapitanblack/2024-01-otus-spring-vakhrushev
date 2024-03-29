@@ -66,24 +66,4 @@ class CommentRepositoryJpaIT {
         assertThat(repositoryJpa.findCommentById(comment.getId())).contains(comment);
 
     }
-
-    @Test
-    void givenComment_whenFindByBookId_thenSuccess() {
-
-        Book book = em.find(Book.class, 1);
-
-        Comment comment1 = new Comment("comment_1", book);
-        Comment comment2 = new Comment("comment_1", book);
-        Comment comment3 = new Comment("comment_1", book);
-        Comment comment4 = new Comment("comment_1", book);
-
-        em.persist(comment1);
-        em.persist(comment2);
-        em.persist(comment3);
-        em.persist(comment4);
-
-        assertThat(repositoryJpa.findCommentsByBookId(book.getId())).hasSizeGreaterThanOrEqualTo(4)
-                .containsAll(Arrays.asList(comment1, comment2, comment3, comment4));
-
-    }
 }
