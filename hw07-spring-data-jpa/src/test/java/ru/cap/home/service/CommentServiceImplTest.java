@@ -39,9 +39,9 @@ class CommentServiceImplTest {
     @Test
     void delete() {
 
-        when(commentRepository.findCommentById(1)).thenReturn(Optional.of(new Comment(1, "test", new Book())));
-        commentService.deleteComment(1);
-        verify(commentRepository, times(1)).deleteCommentById(1);
+        when(commentRepository.findById(1L)).thenReturn(Optional.of(new Comment(1, "test", new Book())));
+        commentService.deleteComment(1L);
+        verify(commentRepository, times(1)).deleteById(1L);
     }
 
 }
