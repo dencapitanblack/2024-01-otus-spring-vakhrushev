@@ -30,7 +30,7 @@ public class CommentCommands {
     }
 
     @ShellMethod(value = "Read comment", key = "cread")
-    @Transactional
+    @Transactional(readOnly = true)
     public String readComment(@ShellOption(help = "Give an id of book", value = "book") long bookId) {
 
         String commentView = commentService.findAllByBookId(bookId).stream().map(commentConverter::commentToString)

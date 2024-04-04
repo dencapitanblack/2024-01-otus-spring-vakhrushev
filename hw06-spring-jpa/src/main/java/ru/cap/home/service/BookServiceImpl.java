@@ -26,7 +26,6 @@ public class BookServiceImpl implements BookService {
     private final GenreRepository genreRepository;
 
     @Override
-    @Transactional
     public Book findById(long id) {
         return bookRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Book with id = %d not found".formatted(id)));
