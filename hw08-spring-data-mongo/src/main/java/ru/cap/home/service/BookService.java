@@ -7,14 +7,14 @@ import java.util.Set;
 
 public interface BookService {
 
-    Book findById(long id);
-
     List<Book> findAll();
 
-    Book insert(String title, Set<Long> idAuthors, Set<Long> idGenres);
+    Book insert(String title, Set<String> authors, Set<String> genres);
 
-    Book update(long id, String title);
+    Book update(int id, String title);
 
-    void deleteById(long id);
+    void deleteById(int id);
+
+    Book getById(int id);
 
 }

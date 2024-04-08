@@ -2,18 +2,15 @@ package ru.cap.home.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.cap.home.exceptions.EntityNotFoundException;
-import ru.cap.home.models.Author;
+import ru.cap.home.exceptions.FieldRequired;
 import ru.cap.home.models.Book;
-import ru.cap.home.models.Genre;
 import ru.cap.home.repositories.AuthorRepository;
 import ru.cap.home.repositories.BookRepository;
 import ru.cap.home.repositories.GenreRepository;
 
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,10 +23,17 @@ public class BookServiceImpl implements BookService {
     private final GenreRepository genreRepository;
 
     @Override
-    @Transactional
-    public Book findById(long id) {
-        return bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id = %d not found".formatted(id)));
+    public Book getById(int id) {
+        return findById(id);
+    }
+
+    private Book findById(int id) {
+
+        if (id >= findAll().size()) {
+            throw new EntityNotFoundException("Book with id %d not found".formatted(id));
+        }
+
+        return findAll().get(id);
     }
 
     @Override
@@ -38,45 +42,42 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    @Transactional
-    public Book insert(String title, Set<Long> idAuthors, Set<Long> idGenres) {
-        return save(0, title, idAuthors, idGenres);
+    public Book insert(String title, Set<String> authors, Set<String> genres) {
+
+        Book book = new Book();
+
+        book.setBookName(title.replaceAll(",", " "));
+        book.setGenres(genres);
+        book.setAuthors(authors);
+
+        return save(book);
     }
 
     @Override
-    @Transactional
-    public Book update(long id, String title) {
+    public Book update(int id, String title) {
         Book book = findById(id);
-        book.setTitle(title);
-        return bookRepository.save(book);
+        book.setBookName(title.replaceAll(",", " "));
+        return save(book);
     }
 
     @Override
-    @Transactional
-    public void deleteById(long id) {
-        bookRepository.deleteById(id);
+    public void deleteById(int id) {
+        bookRepository.delete(findById(id));
     }
 
-    private Book save(long id, String title, Set<Long> idAuthors, Set<Long> idGenres) {
+    private Book save(Book book) {
 
-        title = String.join(" ", title.split(","));
+        if (book.getAuthors().isEmpty()) {
+            throw new FieldRequired("Authors must be set");
+        }
 
-        Set<Author> authors = idAuthors.stream()
-                .map(a -> authorRepository.findById(a)
-                .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(a))))
-                .collect(Collectors.toSet());
+        if (book.getGenres().isEmpty()) {
+            throw new FieldRequired("Genres must be set");
+        }
 
-        Set<Genre> genres = idGenres.stream()
-                .map(g -> genreRepository.findById(g)
-                        .orElseThrow(() -> new EntityNotFoundException("Genre with id %d not found".formatted(g))))
-                .collect(Collectors.toSet());
-
-        var book = Book.builder()
-                .id(id)
-                .title(title)
-                .authors(authors)
-                .genres(genres)
-                .build();
+        if (book.getBookName().isEmpty()) {
+            throw new FieldRequired("Book name must be filled");
+        }
 
         return bookRepository.save(book);
     }

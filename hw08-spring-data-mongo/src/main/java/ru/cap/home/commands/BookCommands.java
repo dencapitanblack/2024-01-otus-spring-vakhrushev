@@ -6,10 +6,12 @@ import org.springframework.shell.standard.ShellMethod;
 import org.springframework.shell.standard.ShellOption;
 import ru.cap.home.converters.BookConverter;
 import ru.cap.home.models.Book;
+import ru.cap.home.service.AuthorService;
 import ru.cap.home.service.BookService;
+import ru.cap.home.service.GenreService;
 
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @ShellComponent
 @RequiredArgsConstructor
@@ -19,33 +21,41 @@ public class BookCommands {
 
     private final BookConverter bookConverter;
 
+    private final AuthorService authorService;
+
+    private final GenreService genreService;
+
 
     @ShellMethod(value = "Show all book", key = {"b", "book"})
-    public String findAllBook() {
+    public String showAllBook() {
 
-        String bookView = bookService.findAll().stream().map(bookConverter::bookToString)
-                .collect(Collectors.joining("," + System.lineSeparator()));
+        List<Book> books = bookService.findAll();
 
-        return bookView.isEmpty() ? "Book not found" : bookView;
+        if (books.isEmpty()) {
+            return "Books not found";
+        }
+
+        return bookConverter.bookToString(books);
     }
 
     @ShellMethod(value = "Add book", key = {"ab", "addbook"})
     public String addBook(
-            @ShellOption(help = "Give the title of book") String title,
-            @ShellOption(help = "Give an id of authors with comma (',') separated", value = "author") Set<Long> authorId,
-            @ShellOption(help = "Give an id of genres with comma (',') separated", value = "genre") Set<Long> genreId) {
+            @ShellOption(help = "Give the title of book", value = "title") String title,
+            @ShellOption(help = "Give an id of authors with comma separated", value = "author") Set<Integer> authorId,
+            @ShellOption(help = "Give an id of genres with comma separated", value = "genre") Set<Integer> genreId) {
 
+            Book book = bookService.insert(title,
+                    authorService.getAuthorsFromId(authorId),
+                    genreService.getGenresFromId(genreId));
 
-            Book book = bookService.insert(title, authorId, genreId);
-
-        return "Book was added \n" + bookConverter.bookToString(book);
+        return "Book was added!";
 
     }
 
     @ShellMethod(value = "Update book", key = {"ub", "updatebook"})
     public String updateBook(
             @ShellOption(help = "Give the title of book", value = "title") String title,
-            @ShellOption(help = "Give an id of book", value = "book") long bookId) {
+            @ShellOption(help = "Give an id of book", value = "book") int bookId) {
 
         bookService.update(bookId, title);
 
@@ -53,7 +63,7 @@ public class BookCommands {
     }
 
     @ShellMethod(value = "Remove book", key = {"rb", "removebook"})
-    public String deleteBook(@ShellOption(help = "Give an id of book", value = "book") long bookId) {
+    public String deleteBook(@ShellOption(help = "Give an id of book", value = "book") int bookId) {
         bookService.deleteById(bookId);
         return "Book was deleted";
     }

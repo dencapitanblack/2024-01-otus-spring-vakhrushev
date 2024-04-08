@@ -1,31 +1,26 @@
 package ru.cap.home.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 
-@Data
+@Document("genre")
+@Getter
+@Setter
 @NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Table(name = "genre")
+@ToString
 public class Genre {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
-    @Column(name = "genre_name", nullable = false)
+    @Field
     private String genreName;
 
-    public Genre(String genreName) {
-        this.genreName = genreName;
-    }
+
 }

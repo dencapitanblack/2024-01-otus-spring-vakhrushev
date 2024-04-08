@@ -1,32 +1,25 @@
 package ru.cap.home.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Column;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 
-@Data
+@Document("author")
+@Getter
+@Setter
+@ToString
 @NoArgsConstructor
-@AllArgsConstructor
-@Entity
-@Table(name = "author")
 public class Author {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private String id;
 
-    @Column(name = "full_name", nullable = false)
-    private String fullName;
-
-    public Author(String fullName) {
-        this.fullName = fullName;
-    }
+    @Field
+    private String authorName;
 
 }

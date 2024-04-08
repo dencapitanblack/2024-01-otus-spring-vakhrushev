@@ -1,26 +1,25 @@
 package ru.cap.home.converters;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.cap.home.models.Book;
 
-import java.util.stream.Collectors;
+import java.util.List;
 
-@RequiredArgsConstructor
 @Component
 public class BookConverter {
-    private final AuthorConverter authorConverter;
 
-    private final GenreConverter genreConverter;
+    public String bookToString(List<Book> books) {
 
-    public String bookToString(Book book) {
+        StringBuilder sb = new StringBuilder();
 
-        String strAuthorView = book.getAuthors().stream().map(authorConverter::authorToString)
-                .collect(Collectors.joining(", "));
-        String strGenreView = book.getGenres().stream().map(genreConverter::genreToString)
-                .collect(Collectors.joining(", "));
+        for (int i = 0; i < books.size(); i++) {
 
-        return "Id: %d, title: %s, author: {%s}, genres: [%s]"
-                .formatted(book.getId(), book.getTitle(), strAuthorView, strGenreView);
+            String authorsView = String.join(", ", books.get(i).getAuthors());
+            String genresView = String.join(", ", books.get(i).getGenres());
+
+            sb.append("\n%d. name - %s, authors - %s, genres - %s".formatted(i, books.get(i).getBookName(), authorsView, genresView));
+        }
+
+        return sb.toString().trim();
     }
 }

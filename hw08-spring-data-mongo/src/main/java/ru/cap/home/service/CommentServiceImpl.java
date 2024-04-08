@@ -1,10 +1,9 @@
 package ru.cap.home.service;
 
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.cap.home.exceptions.EntityNotFoundException;
+import ru.cap.home.exceptions.FieldRequired;
 import ru.cap.home.models.Book;
 import ru.cap.home.models.Comment;
 import ru.cap.home.repositories.CommentRepository;
@@ -15,46 +14,57 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CommentServiceImpl implements CommentService {
 
-    private final CommentRepository commentRepository;
-
     private final BookService bookService;
 
-    private Comment findCommentById(long id) {
-        return commentRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Comment with id = %d not found".formatted(id)));
+    private final CommentRepository commentRepository;
+
+    @Override
+    public Comment findById(String commentId) {
+
+        return commentRepository.findById(commentId).orElseThrow(
+                () -> new EntityNotFoundException("Comment with id - %s not found".formatted(commentId)));
     }
 
     @Override
-    public List<Comment> findAllByBookId(long id) {
-        List<Comment> comments = bookService.findById(id).getComments();
-        return comments;
-    }
-
-
-    @Override
-    @Transactional
-    public void deleteComment(long commentId) {
-        commentRepository.deleteById(findCommentById(commentId).getId());
+    public List<Comment> findAllByBookId(String bookId) {
+        return commentRepository.findAllByBookId(bookId);
     }
 
     @Override
-    @Transactional
-    public Comment insert(String comment, long bookId) {
+    public Comment insert(String comment, int bookId) {
 
-        comment = String.join(" ", comment.split(","));
-
-        Book book = bookService.findById(bookId);
+        comment = comment.replaceAll(",", " ");
+        Book book = bookService.getById(bookId);
         return commentRepository.save(new Comment(comment, book));
     }
 
+
     @Override
-    @Transactional
-    public Comment update(String comment, long commentId) {
-
-        comment = String.join(" ", comment.split(","));
-
-        Comment updComment = findCommentById(commentId);
-        updComment.setComment(comment);
-        return commentRepository.save(updComment);
+    public void deleteComment(String commentId) {
+        commentRepository.deleteById(commentId);
     }
+
+    @Override
+    public Comment update(String comment, String commentId) {
+
+        Comment retComment = findById(commentId);
+        retComment.setComment(comment.replaceAll(",", " "));
+
+        return save(retComment);
+
+    }
+
+    private Comment save(Comment comment) {
+
+        if (comment.getComment().isEmpty()) {
+            throw new FieldRequired("Comment field required");
+        }
+
+        if (comment.getBook() == null) {
+            throw new FieldRequired("Book field required");
+        }
+
+        return commentRepository.save(comment);
+    }
+
 }

@@ -1,14 +1,8 @@
 package ru.cap.home.repositories;
 
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import ru.cap.home.models.Book;
 
-import java.util.List;
 
-public interface BookRepository extends JpaRepository<Book, Long> {
-
-    @Override
-    @EntityGraph(attributePaths = {"genres", "authors"})
-    List<Book> findAll();
+public interface BookRepository extends MongoRepository<Book, String> {
 }
