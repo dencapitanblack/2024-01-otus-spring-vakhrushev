@@ -12,7 +12,11 @@ spring:
   main:
     banner-mode: off
 
+mongock:
+  runner-type: "InitializingBean" # default
+  change-logs-scan-package:
+    - ru.cap.home.mongock.changelog.DBChangelog
+
 logging:
   level:
     root: info
-

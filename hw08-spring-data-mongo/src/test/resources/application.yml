@@ -1,28 +1,21 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-  h2:
-    console:
-      path: /h2-console
-      settings:
-        web-allow-others: true
-      enabled: true
+  #
+#  data:
+#    mongodb:
+#      uri: mongodb://localhost:27017
+#      database: testdatabase
+  #
   shell:
     interactive:
       enabled: false
-  main:
-    banner-mode: off
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: true
-    properties:
-      hibernate:
-        format_sql: true
-  sql:
-    init:
-      mode: always
+#  #
+#  main:
+#    banner-mode: off
+
+mongock:
+  change-logs-scan-package:
+    - ru.cap.home.mongock.changelog.DBChangelog
+
 logging:
   level:
-    root: error
-
+    root: info
