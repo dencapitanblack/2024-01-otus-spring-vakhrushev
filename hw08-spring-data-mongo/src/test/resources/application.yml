@@ -1,0 +1,21 @@
+spring:
+  #
+#  data:
+#    mongodb:
+#      uri: mongodb://localhost:27017
+#      database: testdatabase
+  #
+  shell:
+    interactive:
+      enabled: false
+#  #
+#  main:
+#    banner-mode: off
+
+mongock:
+  change-logs-scan-package:
+    - ru.cap.home.mongock.changelog.DBChangelog
+
+logging:
+  level:
+    root: info
