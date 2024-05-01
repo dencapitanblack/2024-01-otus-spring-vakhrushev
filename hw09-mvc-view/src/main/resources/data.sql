@@ -1,26 +1,9 @@
-insert into author(full_name) values ('author_1');
-insert into author(full_name) values ('author_2');
-
-insert into genre(genre_name) values ('genre_1');
-insert into genre(genre_name) values ('genre_2');
-insert into genre(genre_name) values ('genre_3');
-
-
-insert into book(title) values ('Г.Шилдт. Java');
-insert into book(title) values ('М.Лутц. Python');
-insert into book(title) values ('М.Максимова. Бух. учет');
-insert into book(title) values ('Very long text-Very long text-Very long text-Very long text-Very long text');
-insert into comment(comment, book_id) values ('comment_1_1', 1);
-insert into comment(comment, book_id) values ('comment_1_2', 1);
-insert into comment(comment, book_id) values ('comment_1_3', 1);
-insert into comment(comment, book_id) values ('comment_1_4', 1);
-insert into comment(comment, book_id) values ('comment_2_1', 2);
-insert into comment(comment, book_id) values ('comment_2_1', 2);
-
-insert into book_author (author_id, book_id ) values(1, 1);
-insert into book_author (author_id, book_id ) values(2, 2);
-insert into book_author (author_id, book_id ) values(2, 1);
-insert into book_genre (book_id, genres_id) values (2, 1);
-insert into book_genre (book_id, genres_id) values (1, 1);
-insert into book_genre (book_id, genres_id) values (1, 2);
-insert into book_genre (book_id, genres_id) values (1, 3);
+select * from dual;
+iNSERT INTO author VALUES(1, 'T. Draizer');
+iNSERT INTO author VALUES(2, 'A. Pushkin');
+iNSERT INTO author VALUES(3, 'M. Tven');
+iNSERT INTO genre VALUES(1, 'Classic');
+iNSERT INTO genre VALUES(2, 'Poem');
+iNSERT INTO genre VALUES(3, 'Drama');
+iNSERT INTO BOOK  VALUES(1,1,1, 'Finansist');
+iNSERT INTO BOOK  VALUES(2,2,2, 'Time');

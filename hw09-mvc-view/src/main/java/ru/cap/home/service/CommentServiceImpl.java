@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.cap.home.exceptions.EntityNotFoundException;
-import ru.cap.home.models.Book;
 import ru.cap.home.models.Comment;
 import ru.cap.home.repositories.CommentRepository;
 
@@ -26,7 +25,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public List<Comment> findAllByBookId(long id) {
-        List<Comment> comments = bookService.findById(id).getComments();
+        List<Comment> comments = commentRepository.findAllByBookId(id);
         return comments;
     }
 
@@ -43,8 +42,10 @@ public class CommentServiceImpl implements CommentService {
 
         comment = String.join(" ", comment.split(","));
 
-        Book book = bookService.findById(bookId);
-        return commentRepository.save(new Comment(comment, book));
+        // TODO: 01.05.2024
+//        Book book = bookService.findById(bookId);
+//        return commentRepository.save(new Comment(comment, book));
+        return null;
     }
 
     @Override

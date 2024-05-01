@@ -3,6 +3,7 @@ package ru.cap.home.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.cap.home.dto.BookDto;
 import ru.cap.home.exceptions.EntityNotFoundException;
 import ru.cap.home.models.Author;
 import ru.cap.home.models.Book;
@@ -12,7 +13,6 @@ import ru.cap.home.repositories.BookRepository;
 import ru.cap.home.repositories.GenreRepository;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,28 +27,29 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public Book findById(long id) {
-        return bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("BookDto with id = %d not found".formatted(id)));
+    public BookDto findById(long id) {
+        return BookDto.toDto(bookRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("BookDto with id = %d not found".formatted(id))));
     }
 
     @Override
-    public List<Book> findAll() {
-        return bookRepository.findAll();
-    }
-
-    @Override
-    @Transactional
-    public Book insert(String title, Set<Long> idAuthors, Set<Long> idGenres) {
-        return save(0, title, idAuthors, idGenres);
+    public List<BookDto> findAll() {
+        return bookRepository.findAll().stream().map(BookDto::toDto).collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public Book update(long id, String title) {
-        Book book = findById(id);
+    public BookDto insert(String title, Long idAuthor, Long idGenre) {
+        return save(0, title, idAuthor, idGenre);
+    }
+
+    @Override
+    @Transactional
+    public BookDto update(long id, String title) {
+
+        BookDto book = findById(id);
         book.setTitle(title);
-        return bookRepository.save(book);
+        return BookDto.toDto(bookRepository.save(BookDto.toDomain(book)));
     }
 
     @Override
@@ -57,30 +58,24 @@ public class BookServiceImpl implements BookService {
         bookRepository.deleteById(id);
     }
 
-    private Book save(long id, String title, Set<Long> idAuthors, Set<Long> idGenres) {
+    private BookDto save(long id, String title, Long idAuthor, Long idGenre) {
 
-        title = String.join(" ", title.split(","));
+        Author author = authorRepository.findById(idAuthor)
+                .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(idAuthor)));
 
-        Set<Author> authors = idAuthors.stream()
-                .map(a -> authorRepository.findById(a)
-                .orElseThrow(() -> new EntityNotFoundException("Author with id %d not found".formatted(a))))
-                .collect(Collectors.toSet());
+        Genre genre = genreRepository.findById(idGenre)
+                .orElseThrow(() -> new EntityNotFoundException("Genre with id %d not found".formatted(idGenre)));
 
-        Set<Genre> genres = idGenres.stream()
-                .map(g -> genreRepository.findById(g)
-                        .orElseThrow(() -> new EntityNotFoundException("Genre with id %d not found".formatted(g))))
-                .collect(Collectors.toSet());
 
         var book = Book.builder()
                 .id(id)
                 .title(title)
-                .authors(authors)
-                .genres(genres)
+                .author(author)
+                .genre(genre)
                 .build();
 
-        return bookRepository.save(book);
+        BookDto bookDto = BookDto.toDto(bookRepository.save(book));
+
+        return bookDto;
     }
-
-
-
 }

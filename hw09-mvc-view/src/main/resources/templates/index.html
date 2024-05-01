@@ -7,9 +7,9 @@
     <meta charset="UTF-8">
     <title>Library</title>
 
+
 </head>
 <body>
-
 
 <div class="page-header">
     <div title="Home page">
@@ -34,18 +34,24 @@
         <tr>
             <th>ID</th>
             <th>Title</th>
-            <th>Authors</th>
-            <th>Action</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Details</th>
+            <th>Comments</th>
         </tr>
         </thead>
         <tbody>
 
-        <tr th:each="book : ${booksDto}">
+        <tr th:each="book : ${books}">
             <td style="width: 20%;" th:text="${book.id}">1</td>
             <td th:text="${book.title}">Book name</td>
-            <td th:text="${book.authors}">Book author</td>
+            <td th:text="${book.author.fullName}">Book author</td>
+            <td th:text="${book.genre.genreName}">Book genre</td>
             <td>
-                <a href="bookDetails.html" th:href="@{/details/__${book.id}__}">View/change</a>
+                <a href="book/details.html" th:href="@{/book/details/__${book.id}__}">Details</a>
+            </td>
+            <td>
+                <a href="bookDetails.html" th:href="@{/book/comments/__${book.id}__}">Comments</a>
             </td>
         </tr>
 
