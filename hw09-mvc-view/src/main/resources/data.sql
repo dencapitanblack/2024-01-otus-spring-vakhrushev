@@ -6,8 +6,10 @@ insert into genre(genre_name) values ('genre_2');
 insert into genre(genre_name) values ('genre_3');
 
 
-insert into book(title) values ('title_1');
-insert into book(title) values ('title_2');
+insert into book(title) values ('Г.Шилдт. Java');
+insert into book(title) values ('М.Лутц. Python');
+insert into book(title) values ('М.Максимова. Бух. учет');
+insert into book(title) values ('Very long text-Very long text-Very long text-Very long text-Very long text');
 insert into comment(comment, book_id) values ('comment_1_1', 1);
 insert into comment(comment, book_id) values ('comment_1_2', 1);
 insert into comment(comment, book_id) values ('comment_1_3', 1);

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <link href="../static/styles.css" rel="stylesheet" th:href="@{/styles.css}">
+    <script src="../static/js/js.js" th:src="@{/js/js.js}"></script>
+    <meta charset="UTF-8">
+    <title>Library</title>
+
+</head>
+<body>
+
+
+<div class="page-header">
+    <div title="Home page">
+        <a href="/" th:href="@{/}">
+            <img class="home-img" src="../static/images/home-50.png" th:src="@{/images/home-50.png}"/>
+        </a>
+    </div>
+
+    <div class="dropdown" title="Setting">
+        <img class="setting-img" src="../static/images/settings-50.png" th:src="@{/images/settings-50.png}"/>
+        <div class="dropdown-content">
+            <a href="#">H2 - console</a>
+            <a href="#">Language</a>
+        </div>
+    </div>
+</div>
+
+<div style="padding: 20px;">
+    <h3>List of books</h3>
+    <table class="books">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Authors</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        <tr th:each="book : ${booksDto}">
+            <td style="width: 20%;" th:text="${book.id}">1</td>
+            <td th:text="${book.title}">Book name</td>
+            <td th:text="${book.authors}">Book author</td>
+            <td>
+                <a href="bookDetails.html" th:href="@{/details/__${book.id}__}">View/change</a>
+            </td>
+        </tr>
+
+        </tbody>
+    </table>
+</div>
+
+
+</body>
+</html>

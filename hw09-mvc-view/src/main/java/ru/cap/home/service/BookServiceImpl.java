@@ -29,7 +29,7 @@ public class BookServiceImpl implements BookService {
     @Transactional
     public Book findById(long id) {
         return bookRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Book with id = %d not found".formatted(id)));
+                .orElseThrow(() -> new EntityNotFoundException("BookDto with id = %d not found".formatted(id)));
     }
 
     @Override
