@@ -1,10 +1,10 @@
 select * from dual;
-iNSERT INTO author VALUES(1, 'T. Draizer');
-iNSERT INTO author VALUES(2, 'A. Pushkin');
-iNSERT INTO author VALUES(3, 'M. Tven');
-iNSERT INTO genre VALUES(1, 'Classic');
-iNSERT INTO genre VALUES(2, 'Poem');
-iNSERT INTO genre VALUES(3, 'Drama');
+iNSERT INTO author (full_name) VALUES('T. Draizer');
+iNSERT INTO author (full_name) VALUES('A. Pushkin');
+iNSERT INTO author (full_name) VALUES('M. Tven');
+iNSERT INTO genre (genre_name) VALUES('Classic');
+iNSERT INTO genre (genre_name) VALUES('Poem');
+iNSERT INTO genre (genre_name) VALUES('Drama');
 iNSERT INTO BOOK (AUTHOR_ID,GENRE_ID,TITLE) VALUES(1,1, 'Finansist');
 iNSERT INTO BOOK (AUTHOR_ID,GENRE_ID,TITLE) VALUES(2,2, 'Time');
 insert into comment(book_id, comment) values (1, 'Cool!');

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import ru.cap.home.dto.AuthorDto;
 import ru.cap.home.models.Author;
 import ru.cap.home.repositories.AuthorRepository;
 
@@ -27,8 +28,9 @@ class AuthorServiceImplTest {
     @Test
     void findAll() {
         List<Author> authorList = Collections.singletonList(new Author(1, "test_author_1"));
+        List<AuthorDto> authorDtoList = authorList.stream().map(AuthorDto::toDto).toList();
         when(authorRepository.findAll()).thenReturn(authorList);
-        assertThat(authorService.findAll()).hasSize(1).containsExactlyElementsOf(authorList);
+        assertThat(authorService.findAll()).hasSize(1).containsExactlyElementsOf(authorDtoList);
     }
 
 }

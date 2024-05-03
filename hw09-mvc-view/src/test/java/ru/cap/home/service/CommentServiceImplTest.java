@@ -32,7 +32,7 @@ class CommentServiceImplTest {
     void findAllByBookId() {
 
         List<Comment> commentList = Arrays.asList(new Comment("comment_1", new Book()), new Comment("comment_1", new Book()));
-        when(bookService.findById(1)).thenReturn(Book.builder().comments(commentList).build());
+        when(commentRepository.findAllByBookId(1L)).thenReturn(commentList);
         assertThat(commentService.findAllByBookId(1)).hasSize(2);
     }
 

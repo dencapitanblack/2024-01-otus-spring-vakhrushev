@@ -26,9 +26,8 @@ class BookRepositoryTest {
         assertThat(books).hasSizeGreaterThanOrEqualTo(2);
 
         books.stream().forEach(book -> {
-            assertThat(book.getAuthors()).isNotEmpty();
-            assertThat(book.getGenres()).isNotEmpty();
-            assertThat(book.getComments()).isNotEmpty();
+            assertThat(book.getAuthor()).isNotNull();
+            assertThat(book.getGenre()).isNotNull();
         });
 
     }
