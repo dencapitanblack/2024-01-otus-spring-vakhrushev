@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8"/>
     <title>Details</title>
+
+    <script src="../../static/js/book_details.js" th:src="@{/js/book_details.js}"></script>
+
     <style type="text/css">
-        body {
-            padding: 50px;
-        }
 
         label {
             display: inline-block;
@@ -20,49 +20,178 @@
         .row {
             margin-top: 10px;
         }
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .table-header {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-header th, td {
+            border: 1px;
+            /*padding: 10px; !* Добавляем отступ вокруг содержимого ячеек *!*/
+            height: 20px;
+        }
+
+        .home-img {
+            padding: 8px;
+        }
+
+        .setting-img {
+            padding: 8px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            margin-top: 1%;
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 100px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 5px 5px;
+            text-decoration: none;
+            display: block;
+            font-family: 'Arial', 'Verdana', sans-serif;
+            font-size: 14px;
+        }
+
+        /* Change color of dropdown links on hover */
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        /* Show the dropdown menu on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .books {
+            border: 1px solid steelblue;
+            width: 200px;
+            border-collapse: collapse;
+        }
+
+        .books tr td, th {
+            padding: 5px;
+            border: 1px solid steelblue;
+        }
+
+        .books td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .books td:last-child, td:first-child {
+            width: 50px;
+        }
+
+        input, label {
+            display:block;
+        }
+
+        .errors {
+            color: red;
+        }
+
     </style>
 </head>
 <body>
 
-<div class="create-line"></div>
+<table class="table-header">
+
+    <tbody>
+    <tr bgcolor="#2fdc8c">
+        <td width="1%">
+            <div title="Home page">
+                <a href="index.html" th:href="@{/}">
+                    <img class="home-img" src="/static/images/icons8-home-25.png"
+                         th:src="@{/images/icons8-home-25.png}"/>
+                </a>
+            </div>
+        </td>
+
+        <td>
+            <div class="dropdown" title="Setting">
+                <img class="setting-img" src="/static/images/icons8-setting-25.png"
+                     th:src="@{/images/icons8-setting-25.png}"/>
+                <div class="dropdown-content">
+                    <a href="/h2-console" th:href="${@environment.getProperty('spring.h2.console.path')}">H2 -
+                        console</a>
+                    <a href="#">Language</a>
+                </div>
+            </div>
+        </td>
+        <td width="98%"></td>
+    </tr>
+    </tbody>
+</table>
 
 
-<!-- Person edition -->
-<form id="edit-form" action="edit.html" th:method="post" th:action="@{/}" th:object="${book}">
-    <h3>Person Info:</h3>
+<form style="margin-left: 60px; margin-top: 40px" action="edit.html" id="book-edit-form" th:action="${book.id} == 0 ? @{/book} : @{/book/__${book.id}__}" th:method="post" th:object="${book}">
+    <h3>Book details:</h3>
 
     <div class="row">
         <label for="id-input">ID:</label>
-        <input id="id-input" type="text" readonly="readonly" value="1" th:value="*{id}"/>
+        <input id="id-input" readonly="readonly" name="id" th:value="*{id}" type="text" value="1"/>
     </div>
 
     <div class="row">
-        <label for="person-name-input">Name:</label>
-        <input id="person-name-input" name="name" type="text" value="John Doe" th:value="*{title}"/>
+        <label for="book-title-input">Name:</label>
+        <input id="book-title-input" name="title" th:value="*{title}" type="text" value="John Doe"/>
+        <div class="errors" th:if="${#fields.hasErrors('title')}" th:errors="*{title}" >Error in title field</div>
     </div>
 
     <div class="row">
         <label for="genre-select">Genre:</label>
         <select id="genre-select" th:field="${book.genre.id}">
-            <option th:each="genre : ${genres}" th:value="${genre.id}" th:text="${genre.genreName}" th:selected="*{genre.id}"/>
+            <option th:each="genre : ${genres}" th:selected="*{genre.id}" th:text="${genre.genreName}"
+                    th:value="${genre.id}"/>
         </select>
     </div>
 
     <div class="row">
         <label for="author-select">Author:</label>
         <select id="author-select" th:field="${book.author.id}">
-            <option th:each="author : ${authors}" th:value="${author.id}" th:text="${author.fullName}" th:selected="*{author.id}"/>
+            <option th:each="author : ${authors}" th:selected="*{author.id}" th:text="${author.fullName}"
+                    th:value="${author.id}"/>
         </select>
     </div>
 
 
     <div class="row">
+
         <button type="submit">Save</button>
-        <a href="list.html" th:href="@{/}"><button type="button">Cancel</button></a>
+        <a href="../index.html" th:href="@{/}">
+            <button type="button">Cancel</button>
+        </a>
         <button type="reset">Restore changes</button>
-        <button type="button">Delete</button>
+        <button id="delete_button" type="button">Delete</button>
     </div>
 </form>
+
+<dialog id="delete_dialog">
+    <p>Do you really want to delete the book?</p>
+    <form method="dialog" th:action="@{/book/delete(id=${book.id})}" th:method="delete">
+        <button id="delete_dialog_yes" type="submit">Yes</button>
+        <button id="delete_dialog_cancel" type="button">Cancel</button>
+    </form>
+</dialog>
+
 
 </body>
 </html>

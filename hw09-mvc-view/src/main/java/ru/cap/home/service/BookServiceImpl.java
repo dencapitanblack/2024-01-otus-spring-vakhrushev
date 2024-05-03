@@ -45,11 +45,8 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public BookDto update(long id, String title) {
-
-        BookDto book = findById(id);
-        book.setTitle(title);
-        return BookDto.toDto(bookRepository.save(BookDto.toDomain(book)));
+    public BookDto update(BookDto bookDto) {
+        return save(bookDto.getId(), bookDto.getTitle(), bookDto.getAuthor().getId(), bookDto.getGenre().getId());
     }
 
     @Override

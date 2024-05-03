@@ -16,8 +16,6 @@ public class CommentServiceImpl implements CommentService {
 
     private final CommentRepository commentRepository;
 
-    private final BookService bookService;
-
     private Comment findCommentById(long id) {
         return commentRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Comment with id = %d not found".formatted(id)));

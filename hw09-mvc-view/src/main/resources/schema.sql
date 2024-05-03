@@ -48,4 +48,4 @@ alter table if exists book
 alter table if exists comment
     add constraint FKkko96rdq8d82wm91vh2jsfak7
     foreign key (book_id)
-    references book;
+    references book  ON DELETE CASCADE;
