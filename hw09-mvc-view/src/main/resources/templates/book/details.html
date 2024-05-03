@@ -114,10 +114,19 @@
 
 <table class="table-header">
 
+    <dialog id="change_language_dialog">
+        <div>
+            <div><a href="#" th:href="@{/(lang=en)}" th:text="#{en_lang_switch_button_caption}">Language - EN</a></div>
+            <div><a href="#" th:href="@{/(lang=ru)}" th:text="#{ru_lang_switch_button_caption}">Language - RU</a></div>
+        </div>
+        <button th:text="#{lang_switch_button_caption_cancel}" id="change_language_dialog_close" type="button" style="margin-top: 10px">Cancel</button>
+    </dialog>
+
+
     <tbody>
     <tr bgcolor="#2fdc8c">
         <td width="1%">
-            <div title="Home page">
+            <div th:title="#{header_home_page}" title="Home page">
                 <a href="index.html" th:href="@{/}">
                     <img class="home-img" src="/static/images/icons8-home-25.png"
                          th:src="@{/images/icons8-home-25.png}"/>
@@ -126,38 +135,55 @@
         </td>
 
         <td>
-            <div class="dropdown" title="Setting">
+            <div class="dropdown" th:title="#{header_setting}" title="Setting">
                 <img class="setting-img" src="/static/images/icons8-setting-25.png"
                      th:src="@{/images/icons8-setting-25.png}"/>
                 <div class="dropdown-content">
-                    <a href="/h2-console" th:href="${@environment.getProperty('spring.h2.console.path')}">H2 -
-                        console</a>
-                    <a href="#">Language</a>
+                    <a th:text="#{header_h2_label}" href="/h2-console" th:href="${@environment.getProperty('spring.h2.console.path')}">H2 console</a>
+                    <button th:text="#{header_select_lang}" id="change_lang_button" type="button"
+                            style="border: none; width: 100%; font-size: 14px; text-align: left; height: 25px;">
+                        Language
+                    </button>
                 </div>
             </div>
         </td>
         <td width="98%"></td>
     </tr>
     </tbody>
+
+    <script>
+        const dialogLang = document.querySelector("#change_language_dialog");
+        const buttonStartDialogLang = document.querySelector("#change_lang_button");
+        const buttonStartDialogLangClose = document.querySelector("#change_language_dialog_close");
+
+        buttonStartDialogLang.addEventListener('click', () => {
+            dialogLang.showModal();
+        });
+
+        buttonStartDialogLangClose.addEventListener('click', evt => {
+            dialogLang.close();
+        })
+
+    </script>
 </table>
 
 
 <form style="margin-left: 60px; margin-top: 40px" action="edit.html" id="book-edit-form" th:action="${book.id} == 0 ? @{/book} : @{/book/__${book.id}__}" th:method="post" th:object="${book}">
-    <h3>Book details:</h3>
+    <h3 th:text="#{book_details_title}">Book details:</h3>
 
     <div class="row">
-        <label for="id-input">ID:</label>
+        <label th:text="#{book_details_col_id}" for="id-input">ID:</label>
         <input id="id-input" readonly="readonly" name="id" th:value="*{id}" type="text" value="1"/>
     </div>
 
     <div class="row">
-        <label for="book-title-input">Name:</label>
+        <label th:text="#{book_details_col_name}" for="book-title-input">Name:</label>
         <input id="book-title-input" name="title" th:value="*{title}" type="text" value="John Doe"/>
         <div class="errors" th:if="${#fields.hasErrors('title')}" th:errors="*{title}" >Error in title field</div>
     </div>
 
     <div class="row">
-        <label for="genre-select">Genre:</label>
+        <label th:text="#{book_details_col_genre}" for="genre-select">Genre:</label>
         <select id="genre-select" th:field="${book.genre.id}">
             <option th:each="genre : ${genres}" th:selected="*{genre.id}" th:text="${genre.genreName}"
                     th:value="${genre.id}"/>
@@ -165,7 +191,7 @@
     </div>
 
     <div class="row">
-        <label for="author-select">Author:</label>
+        <label th:text="#{book_details_col_author}" for="author-select">Author:</label>
         <select id="author-select" th:field="${book.author.id}">
             <option th:each="author : ${authors}" th:selected="*{author.id}" th:text="${author.fullName}"
                     th:value="${author.id}"/>
@@ -175,20 +201,20 @@
 
     <div class="row">
 
-        <button type="submit">Save</button>
+        <button th:text="#{save}" type="submit">Save</button>
         <a href="../index.html" th:href="@{/}">
-            <button type="button">Cancel</button>
+            <button th:text="#{cancel}" type="button">Cancel</button>
         </a>
-        <button type="reset">Restore changes</button>
-        <button id="delete_button" type="button">Delete</button>
+        <button th:text="#{restore}" type="reset">Restore changes</button>
+        <button th:text="#{delete}" id="delete_button" type="button">Delete</button>
     </div>
 </form>
 
 <dialog id="delete_dialog">
-    <p>Do you really want to delete the book?</p>
+    <p th:text="#{delete_book_title}">Do you really want to delete the book?</p>
     <form method="dialog" th:action="@{/book/delete(id=${book.id})}" th:method="delete">
-        <button id="delete_dialog_yes" type="submit">Yes</button>
-        <button id="delete_dialog_cancel" type="button">Cancel</button>
+        <button th:text="#{yes}" id="delete_dialog_yes" type="submit">Yes</button>
+        <button th:text="#{cancel}" id="delete_dialog_cancel" type="button">Cancel</button>
     </form>
 </dialog>
 

@@ -97,10 +97,38 @@
 
 <table class="table-header">
 
+    <dialog id="change_language_dialog">
+        <div>
+            <div><a href="#" th:href="@{/(lang=en)}" th:text="#{en_lang_switch_button_caption}">Language - EN</a></div>
+            <div><a href="#" th:href="@{/(lang=ru)}" th:text="#{ru_lang_switch_button_caption}">Language - RU</a></div>
+        </div>
+        <button th:text="#{lang_switch_button_caption_cancel}" id="change_language_dialog_close" type="button" style="margin-top: 10px">Cancel</button>
+    </dialog>
+
+    <script>
+
+        window.onload = function () {
+
+            const dialogLang = document.querySelector("#change_language_dialog");
+            const buttonStartDialogLang = document.querySelector("#change_lang_button");
+            const buttonStartDialogLangClose = document.querySelector("#change_language_dialog_close");
+
+            buttonStartDialogLang.addEventListener('click', () => {
+                dialogLang.showModal();
+            });
+
+            buttonStartDialogLangClose.addEventListener('click', evt => {
+                dialogLang.close();
+            })
+
+        }
+    </script>
+
+
     <tbody>
     <tr bgcolor="#2fdc8c">
         <td width="1%">
-            <div title="Home page">
+            <div th:title="#{header_home_page}" title="Home page">
                 <a href="index.html" th:href="@{/}">
                     <img class="home-img" src="/static/images/icons8-home-25.png"
                          th:src="@{/images/icons8-home-25.png}"/>
@@ -109,13 +137,15 @@
         </td>
 
         <td>
-            <div class="dropdown" title="Setting">
+            <div class="dropdown" th:title="#{header_setting}" title="Setting">
                 <img class="setting-img" src="/static/images/icons8-setting-25.png"
                      th:src="@{/images/icons8-setting-25.png}"/>
                 <div class="dropdown-content">
-                    <a href="/h2-console" th:href="${@environment.getProperty('spring.h2.console.path')}">H2 -
-                        console</a>
-                    <a href="#">Language</a>
+                    <a th:text="#{header_h2_label}" href="/h2-console" th:href="${@environment.getProperty('spring.h2.console.path')}">H2 console</a>
+                    <button th:text="#{header_select_lang}" id="change_lang_button" type="button"
+                            style="border: none; width: 100%; font-size: 14px; text-align: left; height: 25px;">
+                        Language
+                    </button>
                 </div>
             </div>
         </td>
@@ -124,9 +154,11 @@
     </tbody>
 </table>
 
-<h2 style="padding: 30px">This is error page</h2>
 
 
+<h2 style="padding: 30px" th:text="#{error_page_title}">Error page</h2>
+
+<div th:object="${exception}" th:text="${exception}"></div>
 
 </body>
 </html>

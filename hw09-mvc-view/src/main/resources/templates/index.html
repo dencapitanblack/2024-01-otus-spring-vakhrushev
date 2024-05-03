@@ -89,7 +89,7 @@
         }
 
         input, label {
-            display:block;
+            display: block;
         }
     </style>
 </head>
@@ -98,10 +98,38 @@
 
 <table class="table-header">
 
+    <dialog id="change_language_dialog">
+        <div>
+            <div><a href="#" th:href="@{/(lang=en)}" th:text="#{en_lang_switch_button_caption}">Language - EN</a></div>
+            <div><a href="#" th:href="@{/(lang=ru)}" th:text="#{ru_lang_switch_button_caption}">Language - RU</a></div>
+        </div>
+        <button th:text="#{lang_switch_button_caption_cancel}" id="change_language_dialog_close" type="button" style="margin-top: 10px">Cancel</button>
+    </dialog>
+
+    <script>
+
+        window.onload = function () {
+
+            const dialogLang = document.querySelector("#change_language_dialog");
+            const buttonStartDialogLang = document.querySelector("#change_lang_button");
+            const buttonStartDialogLangClose = document.querySelector("#change_language_dialog_close");
+
+            buttonStartDialogLang.addEventListener('click', () => {
+                dialogLang.showModal();
+            });
+
+            buttonStartDialogLangClose.addEventListener('click', evt => {
+                dialogLang.close();
+            })
+
+        }
+    </script>
+
+
     <tbody>
     <tr bgcolor="#2fdc8c">
         <td width="1%">
-            <div title="Home page">
+            <div th:title="#{header_home_page}" title="Home page">
                 <a href="index.html" th:href="@{/}">
                     <img class="home-img" src="/static/images/icons8-home-25.png"
                          th:src="@{/images/icons8-home-25.png}"/>
@@ -110,13 +138,15 @@
         </td>
 
         <td>
-            <div class="dropdown" title="Setting">
+            <div class="dropdown" th:title="#{header_setting}" title="Setting">
                 <img class="setting-img" src="/static/images/icons8-setting-25.png"
                      th:src="@{/images/icons8-setting-25.png}"/>
                 <div class="dropdown-content">
-                    <a href="/h2-console" th:href="${@environment.getProperty('spring.h2.console.path')}">H2 -
-                        console</a>
-                    <a href="#">Language</a>
+                    <a th:text="#{header_h2_label}" href="/h2-console" th:href="${@environment.getProperty('spring.h2.console.path')}">H2 console</a>
+                    <button th:text="#{header_select_lang}" id="change_lang_button" type="button"
+                            style="border: none; width: 100%; font-size: 14px; text-align: left; height: 25px;">
+                        Language
+                    </button>
                 </div>
             </div>
         </td>
@@ -126,16 +156,16 @@
 </table>
 
 <div style="padding: 20px;">
-    <h3>List of books</h3>
+    <h3 th:text="#{list_book_title}">List of books</h3>
     <table class="books">
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Genre</th>
-            <th>Details</th>
-            <th>Comments</th>
+            <th th:text="#{list_book_col_id}">ID</th>
+            <th th:text="#{list_book_col_title}">Title</th>
+            <th th:text="#{list_book_col_author}">Author</th>
+            <th th:text="#{list_book_col_genre}">Genre</th>
+            <th th:text="#{list_book_col_details}">Details</th>
+            <th th:text="#{list_book_col_comments}">Comments</th>
         </tr>
         </thead>
         <tbody>
@@ -146,10 +176,10 @@
             <td th:text="${book.author.fullName}">Book author</td>
             <td th:text="${book.genre.genreName}">Book genre</td>
             <td>
-                <a href="book/details.html" th:href="@{/book/__${book.id}__}">Details</a>
+                <a th:text="#{list_book_action_details}" href="book/details.html" th:href="@{/book/__${book.id}__}">Details</a>
             </td>
             <td>
-                <a href="bookDetails.html" th:href="@{/book/comments/__${book.id}__}">Comments</a>
+                <a th:text="#{list_book_action_comments}" href="bookDetails.html" th:href="@{/book/comments/__${book.id}__}">Comments</a>
             </td>
         </tr>
 
@@ -161,7 +191,7 @@
 
     <div style="margin-top: 10px">
         <a href="book/details.html" th:href="@{/book}">
-            <button type="button">Add book</button>
+            <button th:text="#{add_book_button}" type="button">Add book</button>
         </a>
     </div>
 

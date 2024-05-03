@@ -15,8 +15,8 @@ public class BookDto {
 
     private long id;
 
-    @NotBlank(message = "Title mustn't be empty")
-    @Size(min = 2, message = "Size must be more than 2 symbols")
+    @NotBlank(message = "{empty_title_error}")
+    @Size(min = 2, message = "{size_error}")
     private String title;
 
     private GenreDto genre;

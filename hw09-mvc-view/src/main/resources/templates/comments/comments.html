@@ -109,11 +109,41 @@
 
 <table class="table-header">
 
+    <dialog id="change_language_dialog">
+        <div>
+            <div><a href="#" th:href="@{/(lang=en)}" th:text="#{en_lang_switch_button_caption}">Language - EN</a></div>
+            <div><a href="#" th:href="@{/(lang=ru)}" th:text="#{ru_lang_switch_button_caption}">Language - RU</a></div>
+        </div>
+        <button id="change_language_dialog_close" style="margin-top: 10px" th:text="#{lang_switch_button_caption_cancel}"
+                type="button">Cancel
+        </button>
+    </dialog>
+
+    <script>
+
+        window.onload = function () {
+
+            const dialogLang = document.querySelector("#change_language_dialog");
+            const buttonStartDialogLang = document.querySelector("#change_lang_button");
+            const buttonStartDialogLangClose = document.querySelector("#change_language_dialog_close");
+
+            buttonStartDialogLang.addEventListener('click', () => {
+                dialogLang.showModal();
+            });
+
+            buttonStartDialogLangClose.addEventListener('click', evt => {
+                dialogLang.close();
+            })
+
+        }
+    </script>
+
+
     <tbody>
     <tr bgcolor="#2fdc8c">
         <td width="1%">
-            <div title="Home page">
-                <a href="/index.html" th:href="@{/}">
+            <div th:title="#{header_home_page}" title="Home page">
+                <a href="index.html" th:href="@{/}">
                     <img class="home-img" src="/static/images/icons8-home-25.png"
                          th:src="@{/images/icons8-home-25.png}"/>
                 </a>
@@ -121,13 +151,16 @@
         </td>
 
         <td>
-            <div class="dropdown" title="Setting">
+            <div class="dropdown" th:title="#{header_setting}" title="Setting">
                 <img class="setting-img" src="/static/images/icons8-setting-25.png"
                      th:src="@{/images/icons8-setting-25.png}"/>
                 <div class="dropdown-content">
-                    <a href="/h2-console" th:href="${@environment.getProperty('spring.h2.console.path')}">H2 -
-                        console</a>
-                    <a href="#">Language</a>
+                    <a href="/h2-console" th:href="${@environment.getProperty('spring.h2.console.path')}"
+                       th:text="#{header_h2_label}">H2 console</a>
+                    <button id="change_lang_button" style="border: none; width: 100%; font-size: 14px; text-align: left; height: 25px;" th:text="#{header_select_lang}"
+                            type="button">
+                        Language
+                    </button>
                 </div>
             </div>
         </td>
@@ -138,12 +171,12 @@
 
 
 <div style="padding: 20px;">
-    <h3>List of comments</h3>
+    <h3 th:text="#{comment_title_list}">List of comments</h3>
     <table class="books">
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Comment</th>
+            <th th:text="#{book_details_col_id}">ID</th>
+            <th th:text="#{comment_col_comment}">Comment</th>
         </tr>
         </thead>
         <tbody>
@@ -158,7 +191,6 @@
 
 
 </div>
-
 
 
 </body>

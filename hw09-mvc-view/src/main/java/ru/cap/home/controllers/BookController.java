@@ -27,6 +27,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class BookController {
 
+    // TODO: 03.05.2024 handle exception 
+
     private final BookService bookService;
 
     private final GenreService genreService;
