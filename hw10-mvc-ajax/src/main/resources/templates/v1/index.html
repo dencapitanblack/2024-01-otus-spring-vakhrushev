@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style type="text/css">
+
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .table-header {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-header th, td {
+            border: 1px;
+            /*padding: 10px; !* Добавляем отступ вокруг содержимого ячеек *!*/
+            height: 20px;
+        }
+
+        .home-img {
+            padding: 8px;
+        }
+
+        .setting-img {
+            padding: 8px;
+        }
+
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            margin-top: 1%;
+            display: none;
+            position: absolute;
+            background-color: #f1f1f1;
+            min-width: 100px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 5px 5px;
+            text-decoration: none;
+            display: block;
+            font-family: 'Arial', 'Verdana', sans-serif;
+            font-size: 14px;
+        }
+
+        /* Change color of dropdown links on hover */
+        .dropdown-content a:hover {
+            background-color: #ddd;
+        }
+
+        /* Show the dropdown menu on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .books {
+            border: 1px solid steelblue;
+            width: 200px;
+            border-collapse: collapse;
+        }
+
+        .books tr td, th {
+            padding: 5px;
+            border: 1px solid steelblue;
+        }
+
+        .books td {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .books td:last-child, td:first-child {
+            width: 50px;
+        }
+
+        input, label {
+            display: block;
+        }
+
+        .custom-link-button {
+            background: none !important;
+            border: none;
+            padding: 0 !important;
+            /*optional*/
+            font-family: arial, sans-serif;
+            /*input has OS specific font-family*/
+            color: #069;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+    </style>
+
+
+    <script>
+
+        window.onload = function () {
+
+            fetch('http://localhost:8080/book')
+                .then(response => response.json())
+                .then(json => renderPersonTable(json))
+                .catch(error => renderPersonTable())
+
+            console.log('hehehwewkjfwekfef')
+        }
+
+        function renderCommentsTable(jsonComments) {
+
+            let rootTale = document.getElementById('root_table');
+
+            rootTale.innerHTML = '';
+            rootTale.className = 'books'
+
+            let personTHead = document.createElement('thead');
+            let personTHeadRow = document.createElement('tr');
+
+            let personTHeadRowId = document.createElement('th');
+            personTHeadRowId.textContent = 'ID';
+
+            let personTHeadRowTitle = document.createElement('th');
+            personTHeadRowTitle.textContent = 'Comment';
+
+            rootTale.appendChild(personTHead);
+            personTHead.appendChild(personTHeadRow);
+            personTHeadRow.appendChild(personTHeadRowId);
+            personTHeadRow.appendChild(personTHeadRowTitle);
+
+
+            for (let i = 0; i < jsonComments.length; i += 1) {
+                let comment = jsonComments[i];
+
+                let detailsRow = document.createElement('tr');
+                rootTale.appendChild(detailsRow);
+
+                let commentId = document.createElement('td')
+                commentId.textContent = comment.id;
+
+                let commentTitle = document.createElement('td')
+                commentTitle.textContent = comment.comment;
+
+                detailsRow.appendChild(commentId);
+                detailsRow.appendChild(commentTitle);
+
+            }
+            document.getElementById('add_book_button').style.display = 'none'
+
+        }
+
+        function renderPersonTable(jsonBooks) {
+
+            let rootTale = document.getElementById('root_table');
+
+            rootTale.innerHTML = '';
+            rootTale.className = 'books'
+
+            let personTHead = document.createElement('thead');
+            let personTHeadRow = document.createElement('tr');
+
+            let personTHeadRowId = document.createElement('th');
+            personTHeadRowId.textContent = 'ID';
+
+            let personTHeadRowTitle = document.createElement('th');
+            personTHeadRowTitle.textContent = 'Title';
+
+            let personTHeadRowAuthor = document.createElement('th');
+            personTHeadRowAuthor.textContent = 'Author';
+
+            let personTHeadRowGenre = document.createElement('th');
+            personTHeadRowGenre.textContent = 'Genre';
+
+            let personTHeadRowComment = document.createElement('th');
+            personTHeadRowComment.textContent = 'Comments';
+
+            let personTHeadRowDelete = document.createElement('th');
+            personTHeadRowDelete.textContent = 'Delete';
+
+            rootTale.appendChild(personTHead);
+            personTHead.appendChild(personTHeadRow);
+            personTHeadRow.appendChild(personTHeadRowId);
+            personTHeadRow.appendChild(personTHeadRowTitle);
+            personTHeadRow.appendChild(personTHeadRowAuthor);
+            personTHeadRow.appendChild(personTHeadRowGenre);
+            personTHeadRow.appendChild(personTHeadRowComment);
+            personTHeadRow.appendChild(personTHeadRowDelete);
+
+
+            for (let i = 0; i < jsonBooks.length; i += 1) {
+                let book = jsonBooks[i];
+
+                let detailsRow = document.createElement('tr');
+                rootTale.appendChild(detailsRow);
+
+                let bookId = document.createElement('td')
+                bookId.textContent = book.id;
+
+                let bookTitle = document.createElement('td')
+                bookTitle.textContent = book.title;
+
+                let bookAuthor = document.createElement('td')
+                bookAuthor.textContent = book.author.fullName
+
+                let bookGenre = document.createElement('td')
+                bookGenre.textContent = book.genre.genreName
+
+                let bookComment = document.createElement('td')
+                let bookCommentLink = document.createElement('button')
+                bookCommentLink.innerText = 'Comment'
+                bookCommentLink.className = 'custom-link-button'
+                bookCommentLink.onclick = () => {
+                    fetch('http://localhost:8080/book/comments/' + book.id)
+                        .then(response => response.json())
+                        .then(json => renderCommentsTable(json))
+                        .catch(err => renderCommentsTable)
+                };
+
+                bookComment.appendChild(bookCommentLink)
+
+                let bookDelete = document.createElement('td')
+                let bookDeleteLink = document.createElement('a')
+                bookDeleteLink.innerText = 'Details'
+                bookDeleteLink.href = 'http://localhost:8080/book/' + book.id;
+
+                bookDelete.appendChild(bookDeleteLink)
+
+                detailsRow.appendChild(bookId);
+                detailsRow.appendChild(bookTitle);
+                detailsRow.appendChild(bookAuthor);
+                detailsRow.appendChild(bookGenre);
+                detailsRow.appendChild(bookComment);
+                detailsRow.appendChild(bookDelete);
+
+            }
+            document.getElementById('add_book_button').style.display = 'block'
+        }
+
+        function showFormCreateBook() {
+            document.getElementById('book-edit-form').style.display = 'block'
+        }
+
+    </script>
+
+</head>
+
+
+<body>
+
+<table id="tabheader" class="table-header">
+
+    <dialog id="change_language_dialog">
+        <div>
+            <div><a href="#" th:href="@{/(lang=en)}" th:text="#{en_lang_switch_button_caption}">Language - EN</a></div>
+            <div><a href="#" th:href="@{/(lang=ru)}" th:text="#{ru_lang_switch_button_caption}">Language - RU</a></div>
+        </div>
+        <button th:text="#{lang_switch_button_caption_cancel}" id="change_language_dialog_close" type="button" style="margin-top: 10px">Cancel</button>
+    </dialog>
+
+
+
+    <tbody>
+    <tr bgcolor="#2fdc8c">
+        <td width="1%">
+            <div th:title="#{header_home_page}" title="Home page">
+                <a href="index.html" th:href="@{/}">
+                    <img class="home-img" src="/static/images/icons8-home-25.png"
+                         th:src="@{/images/icons8-home-25.png}"/>
+                </a>
+            </div>
+        </td>
+
+        <td>
+            <div class="dropdown" th:title="#{header_setting}" title="Setting">
+                <img class="setting-img" src="/static/images/icons8-setting-25.png"
+                     th:src="@{/images/icons8-setting-25.png}"/>
+                <div class="dropdown-content">
+                    <a th:text="#{header_h2_label}" href="/h2-console" th:href="${@environment.getProperty('spring.h2.console.path')}">H2 console</a>
+                </div>
+            </div>
+        </td>
+        <td width="98%"></td>
+    </tr>
+    </tbody>
+</table>
+
+
+
+<table id="root_table">
+
+
+</table>
+
+<div id="root">
+
+</div>
+
+
+
+<div id="add_book_button" style="margin-top: 10px">
+    <a href="book/details.html" th:href="@{/book}">
+        <button th:text="#{add_book_button}" type="button">Add book</button>
+    </a>
+</div>
+
+<button onclick="showFormCreateBook()">Add book test</button>
+
+</body>
+</html>

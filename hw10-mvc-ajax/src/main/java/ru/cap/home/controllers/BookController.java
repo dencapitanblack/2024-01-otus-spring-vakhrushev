@@ -45,17 +45,10 @@ public class BookController {
         return authorService.findAll();
     }
 
-    @GetMapping("/book/comments/{id}")
-    public String commentsList(@PathVariable long id, Model model) {
-        model.addAttribute("comments", commentService.findAllByBookId(id));
-        return "comments/comments";
-    }
-
-
     @GetMapping("/")
     public String index(Model model) {
         model.addAttribute("books", bookService.findAll());
-        return "index";
+        return "v1/index";
     }
 
     @GetMapping("/book/{id}")
@@ -83,11 +76,11 @@ public class BookController {
         return "redirect:/";
     }
 
-    @GetMapping("/book")
-    public String addBook(Model model) {
-        model.addAttribute("book", BookDto.toEmptyDto());
-        return "book/details";
-    }
+//    @GetMapping("/book")
+//    public String addBook(Model model) {
+//        model.addAttribute("book", BookDto.toEmptyDto());
+//        return "book/details";
+//    }
 
     @PostMapping("/book")
     public String saveNewBook(@Valid @ModelAttribute("book") BookDto bookDto, BindingResult bindingResult) {
