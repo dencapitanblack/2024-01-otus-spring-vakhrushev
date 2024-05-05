@@ -5,6 +5,10 @@
     <title>Book library</title>
 
     <style type="text/css">
+        body {
+            margin: 50px;
+        }
+
         .row {
             margin-top: 10px;
         }
@@ -12,38 +16,38 @@
 
     <script>
 
+        const globalDivs = ['book_div', 'comments_div', 'book_details_div']
+
         window.onload = () => {
             renderBooks();
         }
 
-        function getURI() {
-            return 'http:://localhost:8080/'
-        }
+        function renderComments(json) {
 
-        function renderComments(bookId) {
-            fetch('/book/' + bookId + '/comment')
-                .then(response => response.json())
-                .then(json => {
-                    let comment_tbody = document.getElementById('comments_tbody')
-                    comment_tbody.innerHTML = ''
+            showComponent('comments_div')
 
-                    for (let i = 0; i < json.length; i += 1) {
-                        let comment_tbody_tr = document.createElement('tr')
+            let comment_tbody = document.getElementById('comments_tbody')
+            comment_tbody.innerHTML = ''
 
-                        let comment_tbody_tr_id = document.createElement('td')
-                        comment_tbody_tr_id.innerText = json[i].id
+            for (let i = 0; i < json.length; i += 1) {
+                let comment_tbody_tr = document.createElement('tr')
 
-                        let comment_tbody_tr_title = document.createElement('td')
-                        comment_tbody_tr_title.innerText = json[i].comment
+                let comment_tbody_tr_id = document.createElement('td')
+                comment_tbody_tr_id.innerText = json[i].id
 
-                        comment_tbody.appendChild(comment_tbody_tr)
-                        comment_tbody_tr.appendChild(comment_tbody_tr_id)
-                        comment_tbody_tr.appendChild(comment_tbody_tr_title)
-                    }
-                })
+                let comment_tbody_tr_title = document.createElement('td')
+                comment_tbody_tr_title.innerText = json[i].comment
+
+                comment_tbody.appendChild(comment_tbody_tr)
+                comment_tbody_tr.appendChild(comment_tbody_tr_id)
+                comment_tbody_tr.appendChild(comment_tbody_tr_title)
+            }
+
         }
 
         function renderBooks() {
+
+            showComponent('book_div')
 
             fetch('/book')
                 .then(response => response.json())
@@ -68,14 +72,24 @@
                         book_tbody_tr_genre.innerText = json[i].genre.genreName
 
                         let book_tbody_tr_details = document.createElement('td')
-                        let book_tbody_tr_details_button = document.createElement('button')
-                        book_tbody_tr_details_button.onclick = 'renderComments(json[i].id)'
-                        book_tbody_tr_details_button.innerText = 'Details'
+                        book_tbody_tr_details.style = 'cursor:pointer;color:blue;text-decoration:underline;'
+                        book_tbody_tr_details.onclick = () => {
+                            fetch('book/' + json[i].id)
+                                .then(response => response.json())
+                                .then(json => renderExistingDetails(json))
 
-                        book_tbody_tr_details.appendChild(book_tbody_tr_details_button)
+                        }
+                        book_tbody_tr_details.innerText = 'Details'
 
-                        let book_tbody_tr_delete = document.createElement('td')
-                        book_tbody_tr_delete.innerText = 'delete'
+
+                        let book_tbody_tr_comment = document.createElement('td')
+                        book_tbody_tr_comment.style = 'cursor:pointer;color:blue;text-decoration:underline;'
+                        book_tbody_tr_comment.onclick = () => {
+                            fetch('/book/' + json[i].id + '/comment')
+                                .then(response => response.json())
+                                .then(json => renderComments(json))
+                        }
+                        book_tbody_tr_comment.innerText = 'Comment'
 
                         book_tbody.appendChild(book_tbody_tr)
                         book_tbody_tr.appendChild(book_tbody_tr_id)
@@ -83,10 +97,129 @@
                         book_tbody_tr.appendChild(book_tbody_tr_author)
                         book_tbody_tr.appendChild(book_tbody_tr_genre)
                         book_tbody_tr.appendChild(book_tbody_tr_details)
-                        book_tbody_tr.appendChild(book_tbody_tr_delete)
+                        book_tbody_tr.appendChild(book_tbody_tr_comment)
 
                     }
                 })
+        }
+
+        function renderExistingDetails(json) {
+
+            showComponent('book_details_div')
+
+            const detailsForm = document.getElementById('book_details_form')
+            const genreSelect = document.getElementById('genre_select')
+            const authorSelect = document.getElementById('author_select')
+
+            let genreId = json.genre.id;
+            let authorId = json.author.id;
+
+            genreSelect.innerHTML = ''
+            authorSelect.innerText = ''
+
+            detailsForm['input_title'].value = json.title
+
+            loadAuthors(authorSelect, authorId);
+            loadGenres(genreSelect, genreId);
+
+            document.getElementById('book_details_save').onclick = () => {
+
+                const formData = JSON.stringify(
+                    {
+                        'id' : json.id,
+                        'title' : document.getElementById('input_title').value,
+                        'author' : {'id' : document.getElementById('author_select').value},
+                        'genre' : {'id' : document.getElementById('genre_select').value}
+                    })
+
+                fetch('/book/' + json.id, {
+                    method : 'PUT',
+                    body : formData,
+                    headers: new Headers({'content-type': 'application/json'})
+                }).then(resp => {
+                    renderBooks();
+                })
+            }
+
+            document.getElementById('delete_dialog_yes').onclick = () => {
+                fetch('/book/' + json.id, {
+                    method : 'DELETE'
+                })
+                    .then(resp => resp.status)
+                    .then(status => {
+                        renderBooks()
+                        document.getElementById('delete_dialog').close()
+                    })
+                    .catch(err => document.getElementById('delete_dialog').close())
+            }
+
+        }
+
+        function renderDetails() {
+
+            showComponent('book_details_div')
+
+            const genreSelect = document.getElementById('genre_select')
+            const authorSelect = document.getElementById('author_select')
+
+            document.getElementById('input_title').value = ''
+
+            genreSelect.innerHTML = ''
+            authorSelect.innerText = ''
+
+            loadAuthors(authorSelect, 0)
+            loadGenres(genreSelect, 0)
+
+            document.getElementById('book_details_save').onclick = () => {
+
+                const formData = JSON.stringify(
+                    {
+                        'title' : document.getElementById('input_title').value,
+                        'author' : {'id' : document.getElementById('author_select').value},
+                        'genre' : {'id' : document.getElementById('genre_select').value}
+                    })
+
+                fetch('/book', {
+                    method : 'POST',
+                    body : formData,
+                    headers: new Headers({'content-type': 'application/json'})
+                }).then(resp => {
+                    renderBooks();
+                })
+            }
+
+        }
+
+        function loadAuthors(componentId, selectedId) {
+            fetch('/author')
+                .then(resp => resp.json())
+                .then(json => {
+                    json.forEach(d => componentId.add(new Option(d.fullName, d.id, false, selectedId == d.id)))
+                })
+        }
+
+        function loadGenres(componentId, selectedId) {
+            fetch('/genre')
+                .then(resp => resp.json())
+                .then(json => {
+                    json.forEach(d => componentId.add(new Option(d.genreName, d.id, false, selectedId === d.id)))
+                })
+        }
+
+        function deleteBookDialog() {
+            document.getElementById('delete_dialog').showModal()
+        }
+
+        function closeDialog() {
+            document.getElementById('delete_dialog').close();
+        }
+
+        function showComponent(componentId) {
+
+            globalDivs.forEach((el) => {
+                    document.getElementById(el).hidden = !(el === componentId)
+            })
+
         }
 
     </script>
@@ -96,7 +229,7 @@
 
 <body>
 
-<div id="book_div">
+<div id="book_div" hidden="true">
 
     <table>
         <thead>
@@ -106,7 +239,7 @@
             <th>Author</th>
             <th>Genre</th>
             <th>Details</th>
-            <th>Delete</th>
+            <th>Comment</th>
         </tr>
         </thead>
         <tbody id="book_tbody">
@@ -114,9 +247,11 @@
         </tbody>
     </table>
 
+    <button id="add_new_book_button" onclick="renderDetails()">Add new book</button>
+
 </div>
 
-<div id="comments_div">
+<div id="comments_div" hidden="true">
 
     <table>
         <thead>
@@ -130,35 +265,49 @@
         </tbody>
     </table>
 
+    <button type="button" onclick="renderBooks()">Back</button>
+
 </div>
 
-<div id="book_details_div">
+<div id="book_details_div" hidden="true">
 
     <form id="book_details_form">
 
         <div class="row">
-            <label for="input_id">ID</label>
-            <input id="input_id">
-        </div>
-
-        <div class="row">
             <label for="input_title">Title</label>
-            <input id="input_title">
+            <input id="input_title" name="input_title">
         </div>
 
         <div class="row">
-            <label for="input_genre">Genre</label>
-            <input id="input_genre">
+            <label for="genre_select">Genre</label>
+            <select id="genre_select">
+
+            </select>
         </div>
 
         <div class="row">
-            <label for="input_author">Author</label>
-            <input id="input_author">
+            <label for="author_select">Author</label>
+            <select id="author_select">
+
+            </select>
         </div>
+
+        <button type="button" id="book_details_save">Save</button>
+        <button type="button" onclick="renderBooks()">Cancel</button>
+        <button id="delete_button" onclick="deleteBookDialog()" type="button">Delete</button>
 
     </form>
 
 </div>
+
+
+<dialog id="delete_dialog">
+    <p>Do you really want to delete the book?</p>
+    <div>
+        <button id="delete_dialog_yes" type="button">Yes</button>
+        <button id="delete_dialog_cancel" type="button" onclick="closeDialog()">Cancel</button>
+    </div>
+</dialog>
 
 </body>
 </html>
