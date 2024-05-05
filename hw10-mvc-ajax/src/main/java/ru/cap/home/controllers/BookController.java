@@ -9,7 +9,7 @@ public class BookController {
 
     @GetMapping("/")
     public String index() {
-        return "v1/index";
+        return "index";
     }
 
 }

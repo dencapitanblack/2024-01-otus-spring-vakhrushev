@@ -1,200 +1,359 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-
     <meta charset="UTF-8">
-    <title>Library</title>
+    <title>Book library</title>
 
     <style type="text/css">
-
         body {
-            margin: 0;
-            padding: 0;
+            margin: 50px;
         }
 
-        .table-header {
-            width: 100%;
-            border-collapse: collapse;
+        .row {
+            margin-top: 10px;
         }
 
-        .table-header th, td {
-            border: 1px;
-            /*padding: 10px; !* Добавляем отступ вокруг содержимого ячеек *!*/
-            height: 20px;
-        }
-
-        .home-img {
-            padding: 8px;
-        }
-
-        .setting-img {
-            padding: 8px;
-        }
-
-        .dropdown {
-            position: relative;
-            display: inline-block;
-        }
-
-        .dropdown-content {
-            margin-top: 1%;
-            display: none;
-            position: absolute;
-            background-color: #f1f1f1;
-            min-width: 100px;
-            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            z-index: 1;
-        }
-
-        .dropdown-content a {
-            color: black;
-            padding: 5px 5px;
-            text-decoration: none;
-            display: block;
-            font-family: 'Arial', 'Verdana', sans-serif;
-            font-size: 14px;
-        }
-
-        /* Change color of dropdown links on hover */
-        .dropdown-content a:hover {
-            background-color: #ddd;
-        }
-
-        /* Show the dropdown menu on hover */
-        .dropdown:hover .dropdown-content {
-            display: block;
-        }
-
-        .books {
-            border: 1px solid steelblue;
-            width: 200px;
-            border-collapse: collapse;
-        }
-
-        .books tr td, th {
-            padding: 5px;
-            border: 1px solid steelblue;
-        }
-
-        .books td {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .books td:last-child, td:first-child {
-            width: 50px;
-        }
-
-        input, label {
-            display: block;
+        .error {
+            color : red;
         }
     </style>
-</head>
-<body>
-
-
-<table class="table-header">
-
-    <dialog id="change_language_dialog">
-        <div>
-            <div><a href="#" th:href="@{/(lang=en)}" th:text="#{en_lang_switch_button_caption}">Language - EN</a></div>
-            <div><a href="#" th:href="@{/(lang=ru)}" th:text="#{ru_lang_switch_button_caption}">Language - RU</a></div>
-        </div>
-        <button th:text="#{lang_switch_button_caption_cancel}" id="change_language_dialog_close" type="button" style="margin-top: 10px">Cancel</button>
-    </dialog>
 
     <script>
 
-        window.onload = function () {
+        const globalDivs = ['book_div', 'comments_div', 'book_details_div']
 
-            const dialogLang = document.querySelector("#change_language_dialog");
-            const buttonStartDialogLang = document.querySelector("#change_lang_button");
-            const buttonStartDialogLangClose = document.querySelector("#change_language_dialog_close");
+        window.onload = () => {
+            renderBooks();
+        }
 
-            buttonStartDialogLang.addEventListener('click', () => {
-                dialogLang.showModal();
-            });
+        function renderComments(json) {
 
-            buttonStartDialogLangClose.addEventListener('click', evt => {
-                dialogLang.close();
+            showComponent('comments_div')
+
+            let comment_tbody = document.getElementById('comments_tbody')
+            comment_tbody.innerHTML = ''
+
+            for (let i = 0; i < json.length; i += 1) {
+                let comment_tbody_tr = document.createElement('tr')
+
+                let comment_tbody_tr_id = document.createElement('td')
+                comment_tbody_tr_id.innerText = json[i].id
+
+                let comment_tbody_tr_title = document.createElement('td')
+                comment_tbody_tr_title.innerText = json[i].comment
+
+                comment_tbody.appendChild(comment_tbody_tr)
+                comment_tbody_tr.appendChild(comment_tbody_tr_id)
+                comment_tbody_tr.appendChild(comment_tbody_tr_title)
+            }
+
+        }
+
+        function renderBooks() {
+
+            showComponent('book_div')
+
+            fetch('/book')
+                .then(response => response.json())
+                .then(json => {
+
+                    let book_tbody = document.getElementById('book_tbody')
+                    book_tbody.innerHTML = ''
+
+                    for (let i = 0; i < json.length; i += 1) {
+                        let book_tbody_tr = document.createElement('tr')
+
+                        let book_tbody_tr_id = document.createElement('td')
+                        book_tbody_tr_id.innerText = json[i].id
+
+                        let book_tbody_tr_title = document.createElement('td')
+                        book_tbody_tr_title.innerText = json[i].title
+
+                        let book_tbody_tr_author = document.createElement('td')
+                        book_tbody_tr_author.innerText = json[i].author.fullName
+
+                        let book_tbody_tr_genre = document.createElement('td')
+                        book_tbody_tr_genre.innerText = json[i].genre.genreName
+
+                        let book_tbody_tr_details = document.createElement('td')
+                        book_tbody_tr_details.style = 'cursor:pointer;color:blue;text-decoration:underline;'
+                        book_tbody_tr_details.onclick = () => {
+                            fetch('book/' + json[i].id)
+                                .then(response => response.json())
+                                .then(json => renderExistingDetails(json))
+
+                        }
+                        book_tbody_tr_details.innerText = 'Details'
+
+
+                        let book_tbody_tr_comment = document.createElement('td')
+                        book_tbody_tr_comment.style = 'cursor:pointer;color:blue;text-decoration:underline;'
+                        book_tbody_tr_comment.onclick = () => {
+                            fetch('/book/' + json[i].id + '/comment')
+                                .then(response => response.json())
+                                .then(json => renderComments(json))
+                        }
+                        book_tbody_tr_comment.innerText = 'Comment'
+
+                        book_tbody.appendChild(book_tbody_tr)
+                        book_tbody_tr.appendChild(book_tbody_tr_id)
+                        book_tbody_tr.appendChild(book_tbody_tr_title)
+                        book_tbody_tr.appendChild(book_tbody_tr_author)
+                        book_tbody_tr.appendChild(book_tbody_tr_genre)
+                        book_tbody_tr.appendChild(book_tbody_tr_details)
+                        book_tbody_tr.appendChild(book_tbody_tr_comment)
+
+                    }
+                })
+        }
+
+        function renderExistingDetails(json) {
+
+            showComponent('book_details_div')
+
+            const detailsForm = document.getElementById('book_details_form')
+            const genreSelect = document.getElementById('genre_select')
+            const authorSelect = document.getElementById('author_select')
+
+            let genreId = json.genre.id;
+            let authorId = json.author.id;
+
+            genreSelect.innerHTML = ''
+            authorSelect.innerText = ''
+            document.getElementById('error_div_title').innerText = ''
+
+            detailsForm['input_title'].value = json.title
+
+            loadAuthors(authorSelect, authorId);
+            loadGenres(genreSelect, genreId);
+
+            document.getElementById('book_details_save').onclick = () => {
+
+                const formData = JSON.stringify(
+                    {
+                        'id': json.id,
+                        'title': document.getElementById('input_title').value,
+                        'author': {'id': document.getElementById('author_select').value},
+                        'genre': {'id': document.getElementById('genre_select').value}
+                    })
+
+                fetch('/book/' + json.id, {
+                    method: 'PUT',
+                    body: formData,
+                    headers: new Headers({'content-type': 'application/json'})
+                }).then(resp => {
+
+                    if (!resp.ok) {
+                        resp.json().then(js => {
+
+                            for (const key in js) {
+
+                                if (!js.hasOwnProperty(key))
+                                    continue;
+
+                                document.getElementById('error_div_' + key).innerText = js[key]
+                                document.getElementById('error_div_' + key).className = 'error'
+                            }
+                        })
+                    } else {
+                        renderBooks();
+                    }
+                })
+            }
+
+            document.getElementById('delete_dialog_yes').onclick = () => {
+                fetch('/book/' + json.id, {
+                    method: 'DELETE'
+                })
+                    .then(resp => resp.status)
+                    .then(status => {
+                        renderBooks()
+                        document.getElementById('delete_dialog').close()
+                    })
+                    .catch(err => document.getElementById('delete_dialog').close())
+            }
+
+        }
+
+        function renderDetails() {
+
+            showComponent('book_details_div')
+
+            const genreSelect = document.getElementById('genre_select')
+            const authorSelect = document.getElementById('author_select')
+
+            document.getElementById('input_title').value = ''
+            document.getElementById('error_div_title').innerText = ''
+
+            genreSelect.innerHTML = ''
+            authorSelect.innerText = ''
+
+            loadAuthors(authorSelect, 0)
+            loadGenres(genreSelect, 0)
+
+            document.getElementById('book_details_save').onclick = () => {
+
+                const formData = JSON.stringify(
+                    {
+                        'title': document.getElementById('input_title').value,
+                        'author': {'id': document.getElementById('author_select').value},
+                        'genre': {'id': document.getElementById('genre_select').value}
+                    })
+
+                fetch('/book', {
+                    method: 'POST',
+                    body: formData,
+                    headers: new Headers({'content-type': 'application/json'})
+                }).then(resp => {
+
+                    if (!resp.ok) {
+                        resp.json().then(js => {
+
+                            for (const key in js) {
+
+                                if (!js.hasOwnProperty(key))
+                                    continue;
+
+                                document.getElementById('error_div_' + key).innerText = js[key]
+                                document.getElementById('error_div_' + key).className = 'error'
+                            }
+                        })
+                    } else {
+                        renderBooks();
+                    }
+
+                }).catch(err => {
+                    err.then(value => {
+                        console.log(typeof value)
+                        console.log(value)
+                        value.forEach((key, val) => {
+
+                        })
+                    })
+                })
+            }
+
+        }
+
+        function loadAuthors(componentId, selectedId) {
+            fetch('/author')
+                .then(resp => resp.json())
+                .then(json => {
+                    json.forEach(d => componentId.add(new Option(d.fullName, d.id, false, selectedId == d.id)))
+                })
+        }
+
+        function loadGenres(componentId, selectedId) {
+            fetch('/genre')
+                .then(resp => resp.json())
+                .then(json => {
+                    json.forEach(d => componentId.add(new Option(d.genreName, d.id, false, selectedId === d.id)))
+                })
+        }
+
+        function deleteBookDialog() {
+            document.getElementById('delete_dialog').showModal()
+        }
+
+        function closeDialog() {
+            document.getElementById('delete_dialog').close();
+        }
+
+        function showComponent(componentId) {
+
+            globalDivs.forEach((el) => {
+                document.getElementById(el).hidden = !(el === componentId)
             })
 
         }
+
     </script>
 
+</head>
 
-    <tbody>
-    <tr bgcolor="#2fdc8c">
-        <td width="1%">
-            <div th:title="#{header_home_page}" title="Home page">
-                <a href="index.html" th:href="@{/}">
-                    <img class="home-img" src="/static/images/icons8-home-25.png"
-                         th:src="@{/images/icons8-home-25.png}"/>
-                </a>
-            </div>
-        </td>
 
-        <td>
-            <div class="dropdown" th:title="#{header_setting}" title="Setting">
-                <img class="setting-img" src="/static/images/icons8-setting-25.png"
-                     th:src="@{/images/icons8-setting-25.png}"/>
-                <div class="dropdown-content">
-                    <a th:text="#{header_h2_label}" href="/h2-console" th:href="${@environment.getProperty('spring.h2.console.path')}">H2 console</a>
-                    <button th:text="#{header_select_lang}" id="change_lang_button" type="button"
-                            style="border: none; width: 100%; font-size: 14px; text-align: left; height: 25px;">
-                        Language
-                    </button>
-                </div>
-            </div>
-        </td>
-        <td width="98%"></td>
-    </tr>
-    </tbody>
-</table>
+<body>
 
-<div style="padding: 20px;">
-    <h3 th:text="#{list_book_title}">List of books</h3>
-    <table class="books">
+<div hidden="true" id="book_div">
+
+    <table>
         <thead>
         <tr>
-            <th th:text="#{list_book_col_id}">ID</th>
-            <th th:text="#{list_book_col_title}">Title</th>
-            <th th:text="#{list_book_col_author}">Author</th>
-            <th th:text="#{list_book_col_genre}">Genre</th>
-            <th th:text="#{list_book_col_details}">Details</th>
-            <th th:text="#{list_book_col_comments}">Comments</th>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Genre</th>
+            <th>Details</th>
+            <th>Comment</th>
         </tr>
         </thead>
-        <tbody>
-
-        <tr th:each="book : ${books}">
-            <td style="width: 20%;" th:text="${book.id}">1</td>
-            <td th:text="${book.title}">Book name</td>
-            <td th:text="${book.author.fullName}">Book author</td>
-            <td th:text="${book.genre.genreName}">Book genre</td>
-            <td>
-                <a th:text="#{list_book_action_details}" href="book/details.html" th:href="@{/book/__${book.id}__}">Details</a>
-            </td>
-            <td>
-                <a th:text="#{list_book_action_comments}" href="bookDetails.html" th:href="@{/book/comments/__${book.id}__}">Comments</a>
-            </td>
-        </tr>
-
+        <tbody id="book_tbody">
 
         </tbody>
-
-
     </table>
 
-    <div style="margin-top: 10px">
-        <a href="book/details.html" th:href="@{/book}">
-            <button th:text="#{add_book_button}" type="button">Add book</button>
-        </a>
-    </div>
+    <button id="add_new_book_button" onclick="renderDetails()">Add new book</button>
 
 </div>
 
+<div hidden="true" id="comments_div">
+
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Comment</th>
+        </tr>
+        </thead>
+        <tbody id="comments_tbody">
+
+        </tbody>
+    </table>
+
+    <button onclick="renderBooks()" type="button">Back</button>
+
+</div>
+
+<div hidden="true" id="book_details_div">
+
+    <form id="book_details_form">
+
+        <div class="row" id="title_div">
+            <label for="input_title">Title</label>
+            <input id="input_title" name="input_title">
+            <div id="error_div_title"></div>
+        </div>
+
+        <div class="row">
+            <label for="genre_select">Genre</label>
+            <select id="genre_select">
+
+            </select>
+        </div>
+
+        <div class="row">
+            <label for="author_select">Author</label>
+            <select id="author_select">
+
+            </select>
+        </div>
+
+        <button id="book_details_save" type="button">Save</button>
+        <button onclick="renderBooks()" type="button">Cancel</button>
+        <button id="delete_button" onclick="deleteBookDialog()" type="button">Delete</button>
+
+    </form>
+
+</div>
+
+
+<dialog id="delete_dialog">
+    <p>Do you really want to delete the book?</p>
+    <div>
+        <button id="delete_dialog_yes" type="button">Yes</button>
+        <button id="delete_dialog_cancel" onclick="closeDialog()" type="button">Cancel</button>
+    </div>
+</dialog>
 
 </body>
 </html>
