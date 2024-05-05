@@ -2,7 +2,6 @@ package ru.cap.home.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import ru.cap.home.models.Comment;
 
 @Data

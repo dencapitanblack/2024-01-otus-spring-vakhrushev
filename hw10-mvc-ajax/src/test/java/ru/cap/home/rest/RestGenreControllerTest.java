@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.cap.home.dto.AuthorDto;
-import ru.cap.home.service.AuthorService;
+import ru.cap.home.dto.GenreDto;
+import ru.cap.home.service.GenreService;
 
 import java.util.List;
 
@@ -17,29 +17,29 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(RestAuthorController.class)
-class RestAuthorControllerTest {
+@WebMvcTest(RestGenreController.class)
+class RestGenreControllerTest {
 
     @Autowired
     private MockMvc mvc;
 
     @MockBean
-    private AuthorService authorService;
+    private GenreService genreService;
 
     @Test
-    void getAuthors() throws Exception {
+    void getGenres() throws Exception {
 
         ObjectWriter om = new ObjectMapper().writer();
 
-        List<AuthorDto> authorDtos = List.of(
-                new AuthorDto(1, "author_1"),
-                new AuthorDto(2, "author_1"));
+        List<GenreDto> genreDtos = List.of(
+                new GenreDto(1, "genre_1"),
+                new GenreDto(2, "genre_2"));
 
-        when(authorService.findAll()).thenReturn(authorDtos);
+        when(genreService.findAll()).thenReturn(genreDtos);
 
-        mvc.perform(get("/author"))
+        mvc.perform(get("/genre"))
                 .andExpect(status().isOk())
-                .andExpect(content().json(om.writeValueAsString(authorDtos)));
+                .andExpect(content().json(om.writeValueAsString(genreDtos)));
 
     }
 }
