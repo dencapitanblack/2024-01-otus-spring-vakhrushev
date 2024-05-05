@@ -14,7 +14,7 @@
         }
 
         .error {
-            color : red;
+            color: red;
         }
     </style>
 
@@ -274,17 +274,25 @@
 
 <body>
 
+
 <div hidden="true" id="book_div">
+
+    <div>
+        <a href="#" th:href="@{/(lang=en)}" th:text="#{en_lang_switch_button_caption}"></a>
+    </div>
+    <div style="padding-bottom: 20px">
+        <a href="#" th:href="@{/(lang=ru)}" th:text="#{ru_lang_switch_button_caption}"></a>
+    </div>
 
     <table>
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Genre</th>
-            <th>Details</th>
-            <th>Comment</th>
+            <th th:text="#{list_book_col_id}">ID</th>
+            <th th:text="#{list_book_col_title}">Title</th>
+            <th th:text="#{list_book_col_author}">Author</th>
+            <th th:text="#{list_book_col_genre}">Genre</th>
+            <th th:text="#{list_book_col_details}">Details</th>
+            <th th:text="#{list_book_col_comments}">Comment</th>
         </tr>
         </thead>
         <tbody id="book_tbody">
@@ -292,7 +300,7 @@
         </tbody>
     </table>
 
-    <button id="add_new_book_button" onclick="renderDetails()">Add new book</button>
+    <button th:text="#{add_book_button}" id="add_new_book_button" onclick="renderDetails()">Add new book</button>
 
 </div>
 
@@ -301,8 +309,8 @@
     <table>
         <thead>
         <tr>
-            <th>ID</th>
-            <th>Comment</th>
+            <th th:text="#{book_details_col_id}">ID</th>
+            <th th:text="#{comment_col_comment}">Comment</th>
         </tr>
         </thead>
         <tbody id="comments_tbody">
@@ -310,7 +318,7 @@
         </tbody>
     </table>
 
-    <button onclick="renderBooks()" type="button">Back</button>
+    <button th:text="#{back_button}" onclick="renderBooks()" type="button">Back</button>
 
 </div>
 
@@ -319,28 +327,28 @@
     <form id="book_details_form">
 
         <div class="row" id="title_div">
-            <label for="input_title">Title</label>
+            <label th:text="#{list_book_col_title}" for="input_title">Title</label>
             <input id="input_title" name="input_title">
             <div id="error_div_title"></div>
         </div>
 
         <div class="row">
-            <label for="genre_select">Genre</label>
+            <label th:text="#{list_book_col_genre}" for="genre_select">Genre</label>
             <select id="genre_select">
 
             </select>
         </div>
 
         <div class="row">
-            <label for="author_select">Author</label>
+            <label th:text="#{list_book_col_author}" for="author_select">Author</label>
             <select id="author_select">
 
             </select>
         </div>
 
-        <button id="book_details_save" type="button">Save</button>
-        <button onclick="renderBooks()" type="button">Cancel</button>
-        <button id="delete_button" onclick="deleteBookDialog()" type="button">Delete</button>
+        <button th:text="#{save}" id="book_details_save" type="button">Save</button>
+        <button th:text="#{cancel}" onclick="renderBooks()" type="button">Cancel</button>
+        <button th:text="#{delete}" id="delete_button" onclick="deleteBookDialog()" type="button">Delete</button>
 
     </form>
 
@@ -348,10 +356,10 @@
 
 
 <dialog id="delete_dialog">
-    <p>Do you really want to delete the book?</p>
+    <p th:text="#{delete_book_title}">Do you really want to delete the book?</p>
     <div>
-        <button id="delete_dialog_yes" type="button">Yes</button>
-        <button id="delete_dialog_cancel" onclick="closeDialog()" type="button">Cancel</button>
+        <button th:text="#{yes}" id="delete_dialog_yes" type="button">Yes</button>
+        <button th:text="#{cancel}" id="delete_dialog_cancel" onclick="closeDialog()" type="button">Cancel</button>
     </div>
 </dialog>
 
