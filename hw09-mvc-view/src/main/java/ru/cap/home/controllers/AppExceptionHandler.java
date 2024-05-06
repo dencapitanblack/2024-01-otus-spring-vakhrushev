@@ -6,7 +6,7 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.cap.home.exceptions.EntityNotFoundException;
 
 @ControllerAdvice
-public class ExceptionController {
+public class AppExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ModelAndView handleEntityNotFoundEx(EntityNotFoundException ex) {
