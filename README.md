@@ -19,4 +19,6 @@ OTUS education spring framework
  
  - hw07 - Homework 07. Spring Data JPA app.
  
- - hw08 - Homework 07. Spring app with mongo DB.
+ - hw08 - Homework 08. Spring app with mongo DB.
+ 
+ - hw09 - Homework 09. Spring mvc-view app.
