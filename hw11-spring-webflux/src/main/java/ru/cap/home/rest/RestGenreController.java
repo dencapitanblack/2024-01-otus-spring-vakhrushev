@@ -3,19 +3,18 @@ package ru.cap.home.rest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.cap.home.dto.GenreDto;
-import ru.cap.home.service.GenreService;
-
-import java.util.List;
+import reactor.core.publisher.Flux;
+import ru.cap.home.models.Genre;
+import ru.cap.home.repositories.GenreRepository;
 
 @RestController
 @RequiredArgsConstructor
 public class RestGenreController {
 
-    private final GenreService genreService;
+    private final GenreRepository genreRepository;
 
     @GetMapping("/genre")
-    public List<GenreDto> getGenres() {
-        return genreService.findAll();
+    public Flux<Genre> getGenres() {
+        return genreRepository.findAll();
     }
 }

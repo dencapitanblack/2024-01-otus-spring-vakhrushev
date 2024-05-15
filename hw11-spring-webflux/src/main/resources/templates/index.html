@@ -70,10 +70,10 @@
                         book_tbody_tr_title.innerText = json[i].title
 
                         let book_tbody_tr_author = document.createElement('td')
-                        book_tbody_tr_author.innerText = json[i].author.fullName
+                        book_tbody_tr_author.innerText = json[i].author
 
                         let book_tbody_tr_genre = document.createElement('td')
-                        book_tbody_tr_genre.innerText = json[i].genre.genreName
+                        book_tbody_tr_genre.innerText = json[i].genre
 
                         let book_tbody_tr_details = document.createElement('td')
                         book_tbody_tr_details.style = 'cursor:pointer;color:blue;text-decoration:underline;'
@@ -115,8 +115,8 @@
             const genreSelect = document.getElementById('genre_select')
             const authorSelect = document.getElementById('author_select')
 
-            let genreId = json.genre.id;
-            let authorId = json.author.id;
+            let genreId = json.genre;
+            let authorId = json.author;
 
             genreSelect.innerHTML = ''
             authorSelect.innerText = ''
@@ -133,8 +133,8 @@
                     {
                         'id': json.id,
                         'title': document.getElementById('input_title').value,
-                        'author': {'id': document.getElementById('author_select').value},
-                        'genre': {'id': document.getElementById('genre_select').value}
+                        'author': document.getElementById('author_select').value,
+                        'genre': document.getElementById('genre_select').value
                     })
 
                 fetch('/book/' + json.id, {
@@ -188,16 +188,16 @@
             genreSelect.innerHTML = ''
             authorSelect.innerText = ''
 
-            loadAuthors(authorSelect, 0)
-            loadGenres(genreSelect, 0)
+            loadAuthors(authorSelect, "")
+            loadGenres(genreSelect, "")
 
             document.getElementById('book_details_save').onclick = () => {
 
                 const formData = JSON.stringify(
                     {
                         'title': document.getElementById('input_title').value,
-                        'author': {'id': document.getElementById('author_select').value},
-                        'genre': {'id': document.getElementById('genre_select').value}
+                        'author': document.getElementById('author_select').value,
+                        'genre': document.getElementById('genre_select').value
                     })
 
                 fetch('/book', {
@@ -239,7 +239,7 @@
             fetch('/author')
                 .then(resp => resp.json())
                 .then(json => {
-                    json.forEach(d => componentId.add(new Option(d.fullName, d.id, false, selectedId == d.id)))
+                    json.forEach(d => componentId.add(new Option(d.fullName, d.fullName, false, selectedId === d.fullName)))
                 })
         }
 
@@ -247,7 +247,7 @@
             fetch('/genre')
                 .then(resp => resp.json())
                 .then(json => {
-                    json.forEach(d => componentId.add(new Option(d.genreName, d.id, false, selectedId === d.id)))
+                    json.forEach(d => componentId.add(new Option(d.genreName, d.genreName, false, selectedId === d.genreName)))
                 })
         }
 

@@ -1,27 +1,12 @@
 spring:
-  datasource:
-    url: jdbc:h2:mem:testdb
-  h2:
-    console:
-      path: /h2-console
-      settings:
-        web-allow-others: true
-      enabled: true
-  shell:
-    interactive:
-      enabled: false
-  main:
-    banner-mode: off
-  jpa:
-    hibernate:
-      ddl-auto: none
-    show-sql: false
-    properties:
-      hibernate:
-        format_sql: true
-  sql:
-    init:
-      mode: always
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: testdatabase
+
+
 logging:
   level:
     root: info
+    org.springframework.http.converter.HttpMessageNotReadableException: debug

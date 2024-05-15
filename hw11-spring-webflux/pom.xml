@@ -12,24 +12,52 @@
 	<artifactId>hw11-spring-webflux</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>hw11-spring-webflux</name>
-	<description>Spring JDBC app (CRUD book, author, genre)</description>
+	<description>Spring webflux app</description>
 	<properties>
 		<java.version>17</java.version>
 		<spring-shell.version>3.2.2</spring-shell.version>
+		<flapdoodle.version>4.6.1</flapdoodle.version>
+		<mongock.version>4.3.8</mongock.version>
 	</properties>
 	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/com.github.cloudyrock.mongock/mongock-api -->
+		<dependency>
+			<groupId>com.github.cloudyrock.mongock</groupId>
+			<artifactId>mongock-api</artifactId>
+			<version>4.3.8</version>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>${snakeyaml.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
 
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>com.h2database</groupId>
-			<artifactId>h2</artifactId>
-			<version>${h2.version}</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
 		</dependency>
+
 
 		<dependency>
 			<groupId>org.projectlombok</groupId>

@@ -1,10 +1,10 @@
 package ru.cap.home.repositories;
 
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Flux;
 import ru.cap.home.models.Comment;
 
-import java.util.List;
+public interface CommentRepository extends ReactiveCrudRepository<Comment, String> {
+    Flux<Comment> findByBookId(String bookId);
 
-public interface CommentRepository extends JpaRepository<Comment, Long> {
-    List<Comment> findAllByBookId(long id);
 }

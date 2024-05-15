@@ -1,49 +1,56 @@
 package ru.cap.home.models;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Table;
+
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.DocumentReference;
+import org.springframework.data.mongodb.core.mapping.Field;
+import reactor.core.publisher.Flux;
 
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@Table(name = "book")
+@Document("book")
 public class Book {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
 
-    @Column(name = "title", nullable = false)
+
+    @Id
+    private String id;
+
+    @Field
+    @NotNull(message = "{empty_title_error}")
     private String title;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "genre_id", nullable = false)
-    private Genre genre;
+    @Field
+    private String genre;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "author_id", nullable = false)
-    private Author author;
+    @Field
+    private String author;
+
+    @DocumentReference
+    private Flux<Comment> comments;
+
+    public Book(String title, String genre, String author, Flux<Comment> comments) {
+        this.title = title;
+        this.genre = genre;
+        this.author = author;
+        this.comments = comments;
+    }
 
     @Override
     public String toString() {
-        return "BookDto{" +
+        return "Book{" +
                 "id=" + id +
                 ", title='" + title;
     }
+
+
 }
