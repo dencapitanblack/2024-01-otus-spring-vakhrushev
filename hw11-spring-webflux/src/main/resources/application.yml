@@ -1,0 +1,12 @@
+spring:
+
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017
+      database: testdatabase
+
+
+logging:
+  level:
+    root: info
+    org.springframework.http.converter.HttpMessageNotReadableException: debug

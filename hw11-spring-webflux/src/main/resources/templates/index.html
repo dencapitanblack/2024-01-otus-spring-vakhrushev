@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Book library</title>
+
+    <style type="text/css">
+        body {
+            margin: 50px;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+
+    <script>
+
+        const globalDivs = ['book_div', 'comments_div', 'book_details_div']
+
+        window.onload = () => {
+            renderBooks();
+        }
+
+        function renderComments(json) {
+
+            showComponent('comments_div')
+
+            let comment_tbody = document.getElementById('comments_tbody')
+            comment_tbody.innerHTML = ''
+
+            for (let i = 0; i < json.length; i += 1) {
+                let comment_tbody_tr = document.createElement('tr')
+
+                let comment_tbody_tr_id = document.createElement('td')
+                comment_tbody_tr_id.innerText = json[i].id
+
+                let comment_tbody_tr_title = document.createElement('td')
+                comment_tbody_tr_title.innerText = json[i].comment
+
+                comment_tbody.appendChild(comment_tbody_tr)
+                comment_tbody_tr.appendChild(comment_tbody_tr_id)
+                comment_tbody_tr.appendChild(comment_tbody_tr_title)
+            }
+
+        }
+
+        function renderBooks() {
+
+            showComponent('book_div')
+
+            fetch('/book')
+                .then(response => response.json())
+                .then(json => {
+
+                    let book_tbody = document.getElementById('book_tbody')
+                    book_tbody.innerHTML = ''
+
+                    for (let i = 0; i < json.length; i += 1) {
+                        let book_tbody_tr = document.createElement('tr')
+
+                        let book_tbody_tr_id = document.createElement('td')
+                        book_tbody_tr_id.innerText = json[i].id
+
+                        let book_tbody_tr_title = document.createElement('td')
+                        book_tbody_tr_title.innerText = json[i].title
+
+                        let book_tbody_tr_author = document.createElement('td')
+                        book_tbody_tr_author.innerText = json[i].author
+
+                        let book_tbody_tr_genre = document.createElement('td')
+                        book_tbody_tr_genre.innerText = json[i].genre
+
+                        let book_tbody_tr_details = document.createElement('td')
+                        book_tbody_tr_details.style = 'cursor:pointer;color:blue;text-decoration:underline;'
+                        book_tbody_tr_details.onclick = () => {
+                            fetch('book/' + json[i].id)
+                                .then(response => response.json())
+                                .then(json => renderExistingDetails(json))
+
+                        }
+                        book_tbody_tr_details.innerText = 'Details'
+
+
+                        let book_tbody_tr_comment = document.createElement('td')
+                        book_tbody_tr_comment.style = 'cursor:pointer;color:blue;text-decoration:underline;'
+                        book_tbody_tr_comment.onclick = () => {
+                            fetch('/book/' + json[i].id + '/comment')
+                                .then(response => response.json())
+                                .then(json => renderComments(json))
+                        }
+                        book_tbody_tr_comment.innerText = 'Comment'
+
+                        book_tbody.appendChild(book_tbody_tr)
+                        book_tbody_tr.appendChild(book_tbody_tr_id)
+                        book_tbody_tr.appendChild(book_tbody_tr_title)
+                        book_tbody_tr.appendChild(book_tbody_tr_author)
+                        book_tbody_tr.appendChild(book_tbody_tr_genre)
+                        book_tbody_tr.appendChild(book_tbody_tr_details)
+                        book_tbody_tr.appendChild(book_tbody_tr_comment)
+
+                    }
+                })
+        }
+
+        function renderExistingDetails(json) {
+
+            showComponent('book_details_div')
+
+            const detailsForm = document.getElementById('book_details_form')
+            const genreSelect = document.getElementById('genre_select')
+            const authorSelect = document.getElementById('author_select')
+
+            let genreId = json.genre;
+            let authorId = json.author;
+
+            genreSelect.innerHTML = ''
+            authorSelect.innerText = ''
+            document.getElementById('error_div_title').innerText = ''
+
+            detailsForm['input_title'].value = json.title
+
+            loadAuthors(authorSelect, authorId);
+            loadGenres(genreSelect, genreId);
+
+            document.getElementById('book_details_save').onclick = () => {
+
+                const formData = JSON.stringify(
+                    {
+                        'id': json.id,
+                        'title': document.getElementById('input_title').value,
+                        'author': document.getElementById('author_select').value,
+                        'genre': document.getElementById('genre_select').value
+                    })
+
+                fetch('/book/' + json.id, {
+                    method: 'PUT',
+                    body: formData,
+                    headers: new Headers({'content-type': 'application/json'})
+                }).then(resp => {
+
+                    if (!resp.ok) {
+                        resp.json().then(js => {
+
+                            for (const key in js) {
+
+                                if (!js.hasOwnProperty(key))
+                                    continue;
+
+                                document.getElementById('error_div_' + key).innerText = js[key]
+                                document.getElementById('error_div_' + key).className = 'error'
+                            }
+                        })
+                    } else {
+                        renderBooks();
+                    }
+                })
+            }
+
+            document.getElementById('delete_dialog_yes').onclick = () => {
+                fetch('/book/' + json.id, {
+                    method: 'DELETE'
+                })
+                    .then(resp => resp.status)
+                    .then(status => {
+                        renderBooks()
+                        document.getElementById('delete_dialog').close()
+                    })
+                    .catch(err => document.getElementById('delete_dialog').close())
+            }
+
+        }
+
+        function renderDetails() {
+
+            showComponent('book_details_div')
+
+            const genreSelect = document.getElementById('genre_select')
+            const authorSelect = document.getElementById('author_select')
+
+            document.getElementById('input_title').value = ''
+            document.getElementById('error_div_title').innerText = ''
+
+            genreSelect.innerHTML = ''
+            authorSelect.innerText = ''
+
+            loadAuthors(authorSelect, "")
+            loadGenres(genreSelect, "")
+
+            document.getElementById('book_details_save').onclick = () => {
+
+                const formData = JSON.stringify(
+                    {
+                        'title': document.getElementById('input_title').value,
+                        'author': document.getElementById('author_select').value,
+                        'genre': document.getElementById('genre_select').value
+                    })
+
+                fetch('/book', {
+                    method: 'POST',
+                    body: formData,
+                    headers: new Headers({'content-type': 'application/json'})
+                }).then(resp => {
+
+                    if (!resp.ok) {
+                        resp.json().then(js => {
+
+                            for (const key in js) {
+
+                                if (!js.hasOwnProperty(key))
+                                    continue;
+
+                                document.getElementById('error_div_' + key).innerText = js[key]
+                                document.getElementById('error_div_' + key).className = 'error'
+                            }
+                        })
+                    } else {
+                        renderBooks();
+                    }
+
+                }).catch(err => {
+                    err.then(value => {
+                        console.log(typeof value)
+                        console.log(value)
+                        value.forEach((key, val) => {
+
+                        })
+                    })
+                })
+            }
+
+        }
+
+        function loadAuthors(componentId, selectedId) {
+            fetch('/author')
+                .then(resp => resp.json())
+                .then(json => {
+                    json.forEach(d => componentId.add(new Option(d.fullName, d.fullName, false, selectedId === d.fullName)))
+                })
+        }
+
+        function loadGenres(componentId, selectedId) {
+            fetch('/genre')
+                .then(resp => resp.json())
+                .then(json => {
+                    json.forEach(d => componentId.add(new Option(d.genreName, d.genreName, false, selectedId === d.genreName)))
+                })
+        }
+
+        function deleteBookDialog() {
+            document.getElementById('delete_dialog').showModal()
+        }
+
+        function closeDialog() {
+            document.getElementById('delete_dialog').close();
+        }
+
+        function showComponent(componentId) {
+
+            globalDivs.forEach((el) => {
+                document.getElementById(el).hidden = !(el === componentId)
+            })
+
+        }
+
+    </script>
+
+</head>
+
+
+<body>
+
+
+<div hidden="true" id="book_div">
+
+    <div>
+        <a href="#" th:href="@{/(lang=en)}" th:text="#{en_lang_switch_button_caption}"></a>
+    </div>
+    <div style="padding-bottom: 20px">
+        <a href="#" th:href="@{/(lang=ru)}" th:text="#{ru_lang_switch_button_caption}"></a>
+    </div>
+
+    <table>
+        <thead>
+        <tr>
+            <th th:text="#{list_book_col_id}">ID</th>
+            <th th:text="#{list_book_col_title}">Title</th>
+            <th th:text="#{list_book_col_author}">Author</th>
+            <th th:text="#{list_book_col_genre}">Genre</th>
+            <th th:text="#{list_book_col_details}">Details</th>
+            <th th:text="#{list_book_col_comments}">Comment</th>
+        </tr>
+        </thead>
+        <tbody id="book_tbody">
+
+        </tbody>
+    </table>
+
+    <button th:text="#{add_book_button}" id="add_new_book_button" onclick="renderDetails()">Add new book</button>
+
+</div>
+
+<div hidden="true" id="comments_div">
+
+    <table>
+        <thead>
+        <tr>
+            <th th:text="#{book_details_col_id}">ID</th>
+            <th th:text="#{comment_col_comment}">Comment</th>
+        </tr>
+        </thead>
+        <tbody id="comments_tbody">
+
+        </tbody>
+    </table>
+
+    <button th:text="#{back_button}" onclick="renderBooks()" type="button">Back</button>
+
+</div>
+
+<div hidden="true" id="book_details_div">
+
+    <form id="book_details_form">
+
+        <div class="row" id="title_div">
+            <label th:text="#{list_book_col_title}" for="input_title">Title</label>
+            <input id="input_title" name="input_title">
+            <div id="error_div_title"></div>
+        </div>
+
+        <div class="row">
+            <label th:text="#{list_book_col_genre}" for="genre_select">Genre</label>
+            <select id="genre_select">
+
+            </select>
+        </div>
+
+        <div class="row">
+            <label th:text="#{list_book_col_author}" for="author_select">Author</label>
+            <select id="author_select">
+
+            </select>
+        </div>
+
+        <button th:text="#{save}" id="book_details_save" type="button">Save</button>
+        <button th:text="#{cancel}" onclick="renderBooks()" type="button">Cancel</button>
+        <button th:text="#{delete}" id="delete_button" onclick="deleteBookDialog()" type="button">Delete</button>
+
+    </form>
+
+</div>
+
+
+<dialog id="delete_dialog">
+    <p th:text="#{delete_book_title}">Do you really want to delete the book?</p>
+    <div>
+        <button th:text="#{yes}" id="delete_dialog_yes" type="button">Yes</button>
+        <button th:text="#{cancel}" id="delete_dialog_cancel" onclick="closeDialog()" type="button">Cancel</button>
+    </div>
+</dialog>
+
+</body>
+</html>
