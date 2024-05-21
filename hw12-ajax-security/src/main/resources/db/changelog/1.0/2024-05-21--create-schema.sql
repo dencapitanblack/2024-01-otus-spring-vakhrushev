@@ -1,4 +1,6 @@
-select * from dual;
+--liquibase formatted sql
+
+--changeset dvakhrushev:2024-05-21--create-schema
 
 drop table if exists author cascade ;
 
@@ -49,3 +51,10 @@ alter table if exists comment
     add constraint FKkko96rdq8d82wm91vh2jsfak7
     foreign key (book_id)
     references book  ON DELETE CASCADE;
+
+CREATE TABLE users (
+                       username VARCHAR(50) NOT NULL,
+                       password VARCHAR(100) NOT NULL,
+                       enabled TINYINT NOT NULL DEFAULT 1,
+                       PRIMARY KEY (username)
+);

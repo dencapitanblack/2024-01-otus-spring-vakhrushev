@@ -1,4 +1,6 @@
-select * from dual;
+--liquibase formatted sql
+
+--changeset dvakhrushev:2024-05-21--insert-data
 iNSERT INTO author (full_name) VALUES('T. Draizer');
 iNSERT INTO author (full_name) VALUES('A. Pushkin');
 iNSERT INTO author (full_name) VALUES('M. Tven');
@@ -13,3 +15,4 @@ insert into comment(book_id, comment) values (1, 'Exc!');
 insert into comment(book_id, comment) values (2, 'Cool! v2');
 insert into comment(book_id, comment) values (2, 'Best! v2');
 insert into comment(book_id, comment) values (2, 'Exc! v2');
+insert into users(username, password, enabled) values ('admin', 'admin', 1);
