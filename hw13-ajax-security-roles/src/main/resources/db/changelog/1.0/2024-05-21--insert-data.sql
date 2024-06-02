@@ -16,3 +16,4 @@ insert into comment(book_id, comment) values (2, 'Cool! v2');
 insert into comment(book_id, comment) values (2, 'Best! v2');
 insert into comment(book_id, comment) values (2, 'Exc! v2');
 insert into users(username, password, enabled) values ('admin', 'admin', 1);
+insert into users(username, password, enabled) values ('user', 'user', 1);
