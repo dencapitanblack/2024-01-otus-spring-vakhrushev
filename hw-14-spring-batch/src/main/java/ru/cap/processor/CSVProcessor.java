@@ -1,7 +1,6 @@
 package ru.cap.processor;
 
-import org.springframework.boot.autoconfigure.amqp.RabbitProperties;
-import org.springframework.context.annotation.Bean;
+import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 import ru.cap.entity.Item;
 import ru.cap.entity.Person;
@@ -10,16 +9,14 @@ import ru.cap.entity.PersonSetting;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * @author dvakhrushev
  */
 
 @Component
-public class PersonLoadFromCSVProcessor {
+public class CSVProcessor implements ItemProcessor<Person, Person> {
 
     public Person process(Person person) {
         enrichItemData(person);

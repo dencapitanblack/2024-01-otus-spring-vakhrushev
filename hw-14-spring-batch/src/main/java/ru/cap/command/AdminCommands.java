@@ -3,9 +3,6 @@ package ru.cap.command;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.*;
 import org.springframework.batch.core.launch.JobLauncher;
-import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
-import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
-import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import ru.cap.config.AppProperties;
@@ -16,7 +13,8 @@ import ru.cap.config.AppProperties;
 
 import java.sql.SQLException;
 
-import static ru.cap.config.JobConfig.INPUT_FILE_NAME;
+import static ru.cap.config.Readers.INPUT_FILE_NAME;
+
 
 @ShellComponent
 @RequiredArgsConstructor
